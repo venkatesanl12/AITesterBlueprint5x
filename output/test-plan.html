@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product Test Plan — Draft</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #526078;
+      --line: #d8deea;
+      --blue: #1d4ed8;
+      --pale: #eff6ff;
+      --amber: #92400e;
+      --amber-bg: #fff7ed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 28px 56px;
+      color: var(--ink);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin-bottom: 8px; font-size: 2rem; }
+    h2 {
+      margin-top: 34px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--line);
+      font-size: 1.35rem;
+    }
+    h3 { margin-top: 22px; font-size: 1.05rem; }
+    p, li { color: var(--muted); }
+    a { color: var(--blue); overflow-wrap: anywhere; }
+    .subtitle { margin-top: 0; }
+    .status {
+      margin: 22px 0;
+      padding: 16px 18px;
+      border: 1px solid #fdba74;
+      border-left: 5px solid #ea580c;
+      border-radius: 6px;
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+    .status p { margin: 6px 0 0; color: inherit; }
+    .meta, table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+    }
+    .meta th, .meta td, th, td {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f3f6fb; color: var(--ink); }
+    .meta th { width: 24%; }
+    .callout {
+      padding: 12px 15px;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      background: var(--pale);
+    }
+    .pending { color: var(--amber); font-weight: 600; }
+    .small { font-size: .9rem; }
+    .page-break { break-before: page; }
+    thead { display: table-header-group; }
+    tr { break-inside: avoid; }
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Product Test Plan</h1>
+    <p class="subtitle">Draft prepared using the Test Plan Skill template</p>
+    <table class="meta" aria-label="Test plan metadata">
+      <tbody>
+        <tr><th>Feature / Module / Release</th><td>Not available — PRD content could not be retrieved</td></tr>
+        <tr><th>Ticket / ADO / Jira ID</th><td>Not provided</td></tr>
+        <tr><th>Prepared by</th><td>QA planning draft</td></tr>
+        <tr><th>Prepared date</th><td>October 18, 2026</td></tr>
+        <tr><th>Target release / test window</th><td>Not provided</td></tr>
+        <tr><th>Plan status</th><td><strong>Draft — blocked for product-specific test design</strong></td></tr>
+      </tbody>
+    </table>
+    <aside class="status">
+      <strong>Source requirement unavailable — product-specific coverage is not yet defined.</strong>
+      <p>The supplied Google Docs link returned HTTP 404 / “Page not found” during retrieval. This plan does not infer feature behavior, acceptance criteria, impacted modules, or platform details. Confirm the document URL and access, or provide the PRD text, before approving this plan or executing feature-specific tests.</p>
+      <p>PRD link supplied: <a href="https://docs.google.com/document/d/1GsT57ocl4HaUCxNhBGVmwvLY7hR24gjVB_RDteltkF4/edit?tab=t.0#heading=h.fpj5kzkp24mo">Open the supplied PRD</a></p>
+    </aside>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. Objective</h2>
+      <p>Define a repeatable QA approach for validating the product change described in the PRD, covering functional behavior, user interface, API and data consistency, integrations, error handling, and regression impact before release. The objective is provisional until the feature and its acceptance criteria are available.</p>
+    </section>
+
+    <section>
+      <h2>2. Scope</h2>
+      <h3>In scope — planning baseline</h3>
+      <ul>
+        <li>Derive feature-specific positive, negative, boundary, and business-rule scenarios from approved acceptance criteria.</li>
+        <li>Validate relevant UI behavior and accessibility/responsive behavior on the supported platforms once confirmed.</li>
+        <li>Validate applicable API contracts, error responses, and UI/API/data consistency where interfaces are identified.</li>
+        <li>Validate required upstream/downstream integrations and role-based behavior where specified.</li>
+        <li>Run smoke, targeted regression, and release sanity checks for impacted areas.</li>
+      </ul>
+      <h3>Out of scope — unless added by the PRD or agreed by stakeholders</h3>
+      <ul>
+        <li>Production execution, destructive testing, and live customer data validation.</li>
+        <li>Performance/load, penetration/security, and formal compliance testing.</li>
+        <li>Third-party systems outside the agreed integration boundary.</li>
+        <li>Unchanged legacy workflows not identified as impacted by the feature.</li>
+      </ul>
+      <p class="callout"><strong>Scope gate:</strong> All product-specific inclusions, exclusions, platforms, and impacted components remain pending PRD review and stakeholder confirmation.</p>
+    </section>
+
+    <section>
+      <h2>3. Requirement Summary</h2>
+      <table>
+        <thead><tr><th>Requirement element</th><th>Current understanding</th><th>Action needed</th></tr></thead>
+        <tbody>
+          <tr><td>Feature overview / business goal</td><td class="pending">Unknown; PRD unavailable</td><td>Retrieve source and summarize intended outcome.</td></tr>
+          <tr><td>User journey / personas</td><td class="pending">Unknown</td><td>Identify actors, permissions, and primary/alternate flows.</td></tr>
+          <tr><td>Acceptance criteria</td><td class="pending">Unknown</td><td>Extract verifiable criteria and map each to test cases.</td></tr>
+          <tr><td>Impacted modules / platforms</td><td class="pending">Unknown</td><td>Confirm web/mobile surfaces, services, and dependencies.</td></tr>
+          <tr><td>Release / tracking reference</td><td class="pending">Not provided</td><td>Record ticket, build, release target, and test window.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Test Methodology</h2>
+      <ul>
+        <li><strong>Functional and negative testing:</strong> Verify defined user flows, business rules, validation, errors, and recovery.</li>
+        <li><strong>Smoke and sanity testing:</strong> Confirm build health and the changed feature's basic operation before deeper execution.</li>
+        <li><strong>Regression testing:</strong> Cover feature-adjacent flows and shared components identified during impact analysis.</li>
+        <li><strong>UI and compatibility testing:</strong> Validate layout, content, controls, accessibility basics, and supported browsers/devices once specified.</li>
+        <li><strong>API and integration testing:</strong> Validate contracts, status/error behavior, field mapping, and cross-system data flow where applicable.</li>
+        <li><strong>End-to-end testing:</strong> Verify full user journeys across the confirmed system boundary.</li>
+        <li><strong>Boundary and data validation:</strong> Exercise limits, missing/invalid values, duplicate submissions, and state transitions defined by requirements.</li>
+        <li><strong>Automation:</strong> Automate stable, repeatable smoke, high-priority regression, and suitable API checks after workflows and framework are confirmed.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Test Approach</h2>
+      <h3>Functional</h3>
+      <p>Translate every acceptance criterion into one or more tests. Include valid and invalid inputs, required/optional fields, business-rule boundaries, state changes, retries, duplicate actions, and expected feedback. Do not set expected outcomes until requirements define them.</p>
+      <h3>UI and accessibility</h3>
+      <p>Compare supported screens with approved designs; check labels, focus order, keyboard operation, visible feedback, responsive layouts, and text scaling against the confirmed platform/browser matrix.</p>
+      <h3>API and data</h3>
+      <p>For identified endpoints, verify request validation, authorization, status codes, response schema, error payloads, persistence, and consistency between service, UI, and stored data. Use only approved test environments and synthetic/non-sensitive data.</p>
+      <h3>Integration and end-to-end</h3>
+      <p>Trace data across relevant components and dependency boundaries. Validate success, failure, timeout, retry, and recovery behaviors where supported by the agreed requirements.</p>
+      <h3>Execution and evidence</h3>
+      <p>Record actual results, build/environment, test data identifiers, defect references, and evidence for each executed case. Mark unavailable dependencies or ambiguous criteria as blocked rather than guessing expected behavior.</p>
+    </section>
+
+    <section>
+      <h2>6. Assumptions</h2>
+      <ul>
+        <li>The linked PRD is intended to be the authoritative requirement source, but it was not accessible at preparation time.</li>
+        <li>No feature-specific behavior, acceptance criterion, target platform, role, integration, release date, or ticket has been assumed.</li>
+        <li>QA, development, product, and release stakeholders will provide an approved build, stable test environment, and test accounts/data before execution.</li>
+        <li>Testing will use non-production environments and non-sensitive data unless explicitly authorized otherwise.</li>
+        <li>All placeholders and TBDs require review before this draft becomes an approved execution plan.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Risks</h2>
+      <table>
+        <thead><tr><th>Risk</th><th>Impact</th><th>Mitigation / owner action</th></tr></thead>
+        <tbody>
+          <tr><td>PRD remains inaccessible or lacks acceptance criteria</td><td>Coverage gaps; testing cannot establish expected results</td><td>Product/QA to restore access, confirm source of truth, and review criteria before case design.</td></tr>
+          <tr><td>Environment or build instability</td><td>Execution delays and unreliable results</td><td>Dev/Release to publish a stable build and communicate deployment changes; QA to record blocked cases.</td></tr>
+          <tr><td>Required roles, accounts, or data are unavailable</td><td>Role and workflow scenarios cannot be completed</td><td>QA/Dev to prepare approved synthetic data and accounts before execution.</td></tr>
+          <tr><td>Unidentified dependency or late scope change</td><td>Integration or regression defects may be missed</td><td>Review architecture/change impact with Dev/Product; re-run impacted tests after changes.</td></tr>
+          <tr><td>Automation framework and supported platforms unknown</td><td>Automation and compatibility scope cannot be committed</td><td>Confirm existing framework, CI, platform matrix, and ownership during test kickoff.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>8. Backup / Contingency Plan</h2>
+      <ul>
+        <li>If the PRD is unavailable, request an accessible copy or approved acceptance criteria; do not sign off feature coverage using inferred behavior.</li>
+        <li>If a dependent service is unavailable, use an approved stub/sandbox only when it preserves the behavior under test; otherwise mark dependent cases blocked and escalate.</li>
+        <li>If the environment is unstable, capture timestamps/build details, pause unreliable execution, and resume after environment health is confirmed.</li>
+        <li>If automation is blocked by infrastructure, execute critical approved cases manually and track automation follow-up separately.</li>
+        <li>If a late change affects scope, update traceability and regression selection, then obtain QA/Product agreement on schedule and exit criteria.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>9. Test Schedule</h2>
+      <p>Dates are intentionally TBD because the release target and test window were not provided.</p>
+      <table>
+        <thead><tr><th>Activity</th><th>Owner</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>PRD access and requirement review</td><td>Product / QA</td><td>TBD</td><td>TBD</td><td>Blocked — source unavailable</td></tr>
+          <tr><td>Test scenario and case preparation</td><td>QA</td><td>TBD</td><td>TBD</td><td>Pending PRD</td></tr>
+          <tr><td>Environment and test data setup</td><td>QA / Dev</td><td>TBD</td><td>TBD</td><td>Not started</td></tr>
+          <tr><td>Smoke and functional testing</td><td>QA</td><td>TBD</td><td>TBD</td><td>Not started</td></tr>
+          <tr><td>API and integration testing (if applicable)</td><td>QA / Dev</td><td>TBD</td><td>TBD</td><td>Not started</td></tr>
+          <tr><td>Regression and automation execution</td><td>QA</td><td>TBD</td><td>TBD</td><td>Not started</td></tr>
+          <tr><td>Test summary and sign-off</td><td>QA / Product</td><td>TBD</td><td>TBD</td><td>Not started</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>10. Test Environment</h2>
+      <table>
+        <thead><tr><th>Environment</th><th>URL</th><th>Purpose</th><th>Owner</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Development</td><td>TBD</td><td>Early validation / developer handoff</td><td>Dev / QA</td><td>TBD</td></tr>
+          <tr><td>QA / Test</td><td>TBD</td><td>Functional, API, and integration testing</td><td>QA / Dev</td><td>TBD</td></tr>
+          <tr><td>Staging</td><td>TBD</td><td>Release-candidate validation</td><td>Release / QA</td><td>TBD</td></tr>
+          <tr><td>Production</td><td>Not in scope for planned execution</td><td>Only post-release sanity if separately approved</td><td>Product / QA</td><td>Not planned</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Platform/build matrix:</strong> Not provided. Confirm supported OS, browser/device versions, build identifiers, feature flags, and service endpoints before execution.</p>
+    </section>
+
+    <section>
+      <h2>11. Test Data</h2>
+      <table>
+        <thead><tr><th>Data requirement</th><th>Description</th><th>Owner</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>User accounts / roles</td><td>One approved account per required role and permission state, once identified</td><td>QA / Dev</td><td>TBD</td></tr>
+          <tr><td>Workflow records</td><td>Representative new, existing, boundary, and negative-case records, as applicable</td><td>QA / Dev</td><td>TBD</td></tr>
+          <tr><td>API payloads</td><td>Valid, invalid, missing-field, and boundary payloads for confirmed endpoints</td><td>QA</td><td>TBD</td></tr>
+          <tr><td>Files / documents</td><td>Approved valid and invalid file samples only if upload/download is in scope</td><td>QA</td><td>TBD</td></tr>
+          <tr><td>Configuration / feature flags</td><td>Required test configuration and enabled flags</td><td>Dev / Product</td><td>TBD</td></tr>
+        </tbody>
+      </table>
+      <p>Use synthetic or approved masked data. Document setup and cleanup steps; do not place secrets or personal data in test evidence.</p>
+    </section>
+
+    <section>
+      <h2>12. Entry Criteria</h2>
+      <ul>
+        <li>PRD is accessible and approved; acceptance criteria and scope are testable.</li>
+        <li>Impacted components, supported platforms, dependencies, and release target are identified.</li>
+        <li>Test cases and requirement traceability have been reviewed by QA and Product.</li>
+        <li>Build is deployed to an accessible, stable test environment and build identity is known.</li>
+        <li>Required feature flags, accounts, roles, integrations, and test data are ready.</li>
+        <li>Known limitations and unresolved requirement questions are documented and triaged.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>13. Exit Criteria</h2>
+      <ul>
+        <li>All approved, in-scope test cases have an execution status; blocked and not-run items have documented reasons and owners.</li>
+        <li>All critical/high-priority scenarios pass, or remaining failures have an approved release disposition.</li>
+        <li>No open blocker/critical defects remain; high-severity defects are fixed or formally accepted by Product/Release.</li>
+        <li>Fixes have been retested and relevant regression has passed.</li>
+        <li>Applicable automation has completed successfully, or failures/waivers are documented.</li>
+        <li>Test summary, open risks, defect status, and QA recommendation are shared; required stakeholder sign-off is recorded.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>14. Defect Tracking</h2>
+      <p>Track defects in the team’s approved issue system (Jira/ADO reference not provided). Each defect should include title, feature/module, environment and build, reproducible steps, expected and actual results, severity, priority, evidence/logs, test data reference, and owner.</p>
+      <table>
+        <thead><tr><th>Severity</th><th>Guideline</th></tr></thead>
+        <tbody>
+          <tr><td>Critical</td><td>System unusable, complete blocker, or critical data/business flow failure with no viable workaround.</td></tr>
+          <tr><td>High</td><td>Major feature or key workflow broken; significant impact with no acceptable workaround.</td></tr>
+          <tr><td>Medium</td><td>Functional issue with limited impact or a viable workaround.</td></tr>
+          <tr><td>Low</td><td>Minor UI, content, or usability issue with minimal functional impact.</td></tr>
+        </tbody>
+      </table>
+      <p>Severity describes impact; priority and release disposition are agreed with Product/Engineering under the team’s triage process.</p>
+    </section>
+
+    <section>
+      <h2>15. Automation Testing Scope</h2>
+      <h3>Candidate automation scope</h3>
+      <ul>
+        <li>Stable smoke tests for the confirmed critical user journey.</li>
+        <li>Repeatable high-priority acceptance/regression cases.</li>
+        <li>API contract and data-driven validation where supported.</li>
+        <li>Cross-browser/device automation only for the agreed support matrix and reliable framework coverage.</li>
+      </ul>
+      <h3>Not committed until clarified</h3>
+      <ul>
+        <li>Flows involving CAPTCHA, OTP, manual approval, unstable third-party services, or one-time setup unless test hooks are provided.</li>
+        <li>Visual-only checks without approved visual baselines and tooling.</li>
+      </ul>
+      <table>
+        <thead><tr><th>Framework detail</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Language / framework / test runner</td><td>TBD</td></tr>
+          <tr><td>Reporting / CI pipeline</td><td>TBD</td></tr>
+          <tr><td>Browser / device coverage</td><td>TBD — confirm supported matrix</td></tr>
+          <tr><td>Execution type and ownership</td><td>TBD</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>16. Regression Scope</h2>
+      <p>Finalize after impact analysis. At minimum, consider the changed feature's existing flows, neighboring modules, shared APIs/components, role and permission checks, integrations, persistence/state transitions, and affected web/mobile surfaces. Include relevant search/list/report/notification flows only if the PRD or dependency analysis identifies impact.</p>
+    </section>
+
+    <section>
+      <h2>17. Deliverables</h2>
+      <ul>
+        <li>Approved test plan and requirement-to-test traceability.</li>
+        <li>Test scenarios, detailed test cases, and controlled test data/setup notes.</li>
+        <li>Defect log with evidence and retest status.</li>
+        <li>Execution, automation, and regression summaries.</li>
+        <li>QA sign-off recommendation with open risks, blockers, and accepted exceptions.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>18. Test Case Template</h2>
+      <table>
+        <thead><tr><th>TC ID</th><th>Requirement / Scenario</th><th>Preconditions</th><th>Steps</th><th>Test data</th><th>Expected result</th><th>Priority</th><th>Type</th><th>Status</th></tr></thead>
+        <tbody><tr><td>TBD</td><td>Populate after PRD review</td><td>TBD</td><td>TBD</td><td>TBD</td><td>Use approved acceptance criteria</td><td>TBD</td><td>TBD</td><td>Not run</td></tr></tbody>
+      </table>
+      <p>Each acceptance criterion should map to at least one test case; include applicable positive, negative, boundary, role, and integration coverage.</p>
+    </section>
+
+    <section>
+      <h2>19. Test Execution Report Template</h2>
+      <table>
+        <thead><tr><th>TC ID</th><th>Scenario</th><th>Status</th><th>Actual result</th><th>Defect ID</th><th>Evidence</th><th>Remarks</th></tr></thead>
+        <tbody><tr><td>TBD</td><td>TBD</td><td>Not run</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>20. Defect Report Template</h2>
+      <table>
+        <thead><tr><th>Defect ID</th><th>Title</th><th>Severity</th><th>Priority</th><th>Status</th><th>Owner</th><th>Remarks</th></tr></thead>
+        <tbody><tr><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>21. Sign-off Template</h2>
+      <p><strong>Feature:</strong> TBD &nbsp; <strong>Environment:</strong> TBD &nbsp; <strong>Build:</strong> TBD</p>
+      <p><strong>Testing start:</strong> TBD &nbsp; <strong>Testing end:</strong> TBD</p>
+      <table>
+        <thead><tr><th>Total cases</th><th>Passed</th><th>Failed</th><th>Blocked</th><th>Not executed</th></tr></thead>
+        <tbody><tr><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr></tbody>
+      </table>
+      <table>
+        <thead><tr><th>Open defect ID</th><th>Severity</th><th>Status</th><th>Remarks / disposition</th></tr></thead>
+        <tbody><tr><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr></tbody>
+      </table>
+      <p><strong>QA recommendation:</strong> ☐ Good to release &nbsp; ☐ Good to release with known issues &nbsp; ☐ Blocked &nbsp; ☐ Not recommended for release</p>
+      <p><strong>QA remarks:</strong> Record residual risk, outstanding questions, and accepted exceptions.</p>
+      <p><strong>QA approver / date:</strong> TBD &nbsp; <strong>Product / Release approver / date:</strong> TBD</p>
+    </section>
+  </main>
+
+  <footer>
+    <p class="small">Document status: Draft. Update and approve this plan after the PRD becomes accessible and product-specific requirements are reviewed.</p>
+  </footer>
+</body>
+</html>

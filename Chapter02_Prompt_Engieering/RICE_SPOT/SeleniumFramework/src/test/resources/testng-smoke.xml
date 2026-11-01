@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Salesforce Smoke" parallel="methods" thread-count="2" data-provider-thread-count="2">
+    <listeners>
+        <listener class-name="com.aitester.salesforce.listeners.ScreenshotListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+    <test name="Framework and sandbox smoke">
+        <classes>
+            <class name="com.aitester.salesforce.tests.FrameworkBrowserSmokeTest"/>
+            <class name="com.aitester.salesforce.tests.SalesforceLoginSmokeTest"/>
+        </classes>
+    </test>
+</suite>

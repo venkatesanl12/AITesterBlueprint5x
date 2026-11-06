@@ -1,0 +1,54 @@
+name: Playwright
+
+on:
+  push:
+    paths:
+      - 'Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework/**'
+  pull_request:
+    paths:
+      - 'Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework/**'
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: Optional Playwright grep/tag filter
+        required: false
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [api, ui-chromium, ui-firefox, ui-webkit, hybrid-chromium]
+        shard: [1/2, 2/2]
+    defaults:
+      run:
+        working-directory: Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - name: Run project shard
+        env:
+          BASE_URL: ${{ vars.OPENCART_BASE_URL }}
+          TEST_GREP: ${{ inputs.grep }}
+        run: |
+          if [ -n "$TEST_GREP" ]; then
+            npx playwright test --project="${{ matrix.project }}" --shard=${{ matrix.shard }} --grep "$TEST_GREP"
+          else
+            npx playwright test --project="${{ matrix.project }}" --shard=${{ matrix.shard }}
+          fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.project }}-${{ strategy.job-index }}
+          path: |
+            Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework/playwright-report/
+            Chapter02_Prompt_Engieering/RICE_SPOT/PlayWrightFramework/test-results/
+          retention-days: 14

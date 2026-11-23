@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gap Analysis — How to Use the RICE-POT Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Gap Analysis — RICE-POT reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>11-gap-analysis-RICEPOT.md</strong></div>
+      <div><span>Framework</span><strong>RICE-POT</strong></div>
+      <div><span>Task</span><strong>Typed gap register and coverage before/after</strong></div>
+      <div><span>Guide</span><strong>11 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Compares a baseline artefact against what actually exists and reports every hole with a type, an impact rating, an owner, a closure action, and computed coverage before and after those closures.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You suspect requirements, tests, data, environments, or automation have holes and need to prove exactly where — with impact — rather than asserting &ldquo;coverage looks thin&rdquo;.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>You need a full requirement decomposition — use <code>01-requirement-analysis-RICEPOT.md</code>. Gap analysis compares; it does not extract.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>The Role never supplies the missing answer, only the missing piece and its impact. That is what separates a gap register from a to-do list of guesses.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">R</span><div><b>Role</b><small>Who the model is and the standard it is held to.</small></div></div>
+      <div class="letter"><span class="key">I</span><div><b>Instructions</b><small>The numbered procedure. This is the part that must not be softened.</small></div></div>
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>The only section you edit per run — product, sources, constraints.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Example</b><small>A locked sample row showing the exact expected shape.</small></div></div>
+      <div class="letter"><span class="key">P</span><div><b>Parameters</b><small>Anti-hallucination rules: determinism, exact fallback phrases, allowed values.</small></div></div>
+      <div class="letter"><span class="key">O</span><div><b>Output</b><small>Fixed sections in a fixed order with fixed columns.</small></div></div>
+      <div class="letter"><span class="key">T</span><div><b>Tone</b><small>How the answer should read. No praise, no filler.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> R, I, E, P, O and T stay as written. Only <b>C — Context</b> changes between runs. If you find yourself editing I, P or O, the template is being used for the wrong task.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>A gap analysis is only as meaningful as the two artefacts it compares. Name both, precisely.</p>
+    <ul>
+      <li><b>Baseline artefact</b> — the requirements, PRD, or spec with IDs. This is what everything is compared against.</li>
+      <li><b>Comparison artefact</b> — test cases, implementation, automation suite, or whatever should satisfy the baseline.</li>
+      <li><b>Owners roster</b> — names or roles, so gaps can be assigned without inventing owners.</li>
+      <li><b>Prior gap list</b> — if one exists, so reconciliation is by ID rather than memory.</li>
+      <li><b>Product and release</b> — the scope the percentages apply to.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[PRODUCT, VERSION]</code></td><td>Scope of the analysis.</td><td>VWO 2026.11</td></tr>
+        <tr><td><code>[REQUIREMENTS DOC / PRD / SPEC with IDs]</code></td><td>The baseline, with IDs.</td><td>PRD §4, REQ-001…REQ-012</td></tr>
+        <tr><td><code>[TEST CASES / IMPLEMENTATION / AUTOMATION SUITE]</code></td><td>What is being checked for presence.</td><td>VWO-LOGIN-TC-001…TC-012</td></tr>
+        <tr><td><code>[NAMES / ROLES]</code></td><td>Who can close a gap.</td><td>BA R. Iyer, QA A. Sharma</td></tr>
+        <tr><td><code>[PASTE OR &quot;None&quot;]</code></td><td>Prior gap list to reconcile against by ID.</td><td>GAP-01…GAP-05 from the last cycle</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Giving two artefacts that are not comparable — a PRD against a Jira epic, for example. The register then fills with documentation gaps rather than coverage gaps, and the percentages mean nothing.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Six sections. Coverage is reported twice on purpose: what is true today, and what would be true once the named closures land.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Scope of Analysis</b></td><td><span class="yes">Yes</span></td><td>Baseline, comparison set, method, date</td></tr>
+        <tr><td><b>Gap Register</b></td><td><span class="yes">Yes</span></td><td>Table, 9 columns, unique <code>GAP-</code> IDs</td></tr>
+        <tr><td><b>Coverage Before/After</b></td><td><span class="yes">Yes</span></td><td>Area | Baseline Items | Covered | Coverage % | After Closures %</td></tr>
+        <tr><td><b>Top 5 Priorities</b></td><td><span class="yes">Yes</span></td><td>Ranked list with rationale</td></tr>
+        <tr><td><b>Reconciled Prior Gaps</b></td><td><span class="yes">Yes</span></td><td>Prior GAP ID | Current Status | Evidence; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Assumptions and Limits</b></td><td><span class="yes">Yes</span></td><td>Bullets on what was not examined</td></tr>
+      </tbody>
+    </table>
+    <p>Gap types are closed list: Requirement, Test Coverage, Data, Environment, Automation, Documentation, Process. Impact rating is 3-point: Release-blocking / High / Low, each with a one-line reason. Every row needs type, impact, owner, closure action, status.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — one coverage gap and one environment gap, because the second is what actually blocks execution.</p>
+    <table>
+      <thead><tr><th style="width:10%">GAP ID</th><th style="width:16%">Type</th><th style="width:30%">Description</th><th style="width:15%">Impact Rating</th><th style="width:13%">Owner</th><th>Closure Action</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><span class="id">GAP-02</span></td><td>Test Coverage</td><td>No case covers locked-account login; the lockout path is unverified</td><td>High</td><td>A. Sharma</td><td>Add locked-account case once an account is provisioned</td><td>Open</td></tr>
+        <tr><td><span class="id">GAP-07</span></td><td>Environment</td><td>No locked test account available, so blocked cases cannot execute</td><td><span class="no">Release-blocking</span></td><td>R. Iyer</td><td>Provision a locked account in staging</td><td>Open</td></tr>
+      </tbody>
+    </table>
+    <p>Coverage from the same run — Login: 12 baseline items, 9 covered, 75% today, 92% if GAP-02 and GAP-07 close.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Seven checks. The two that matter most are the nine populated fields per row, and coverage recomputed from counts.</p>
+    <ul class="check">
+      <li>Baseline and comparison artefacts are named explicitly.</li>
+      <li>Every gap row has all nine fields populated.</li>
+      <li>Every impact rating has a reason.</li>
+      <li>Coverage percentages recomputed from counts.</li>
+      <li>No gap contains a guessed answer.</li>
+      <li>Prior gap reconciliation is done by ID, not by memory.</li>
+      <li>Assumptions section states what was <i>not</i> examined.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Pick a gap row and ask &ldquo;who closes this, and what is the next physical action?&rdquo; If either answer is missing, the row is not actionable.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>A gap row contains the answer rather than the hole.</td><td>Never fill a gap.</td><td>&ldquo;Move the proposed answer into Assumptions and keep the row Open.&rdquo;</td></tr>
+        <tr><td>An impact rating has no reason.</td><td>Reason per rating.</td><td>&ldquo;Add the one-line reason it matters.&rdquo;</td></tr>
+        <tr><td>An owner was invented.</td><td>No invented owners.</td><td>&ldquo;Write Not supplied. and flag it in the register.&rdquo;</td></tr>
+        <tr><td>Two distinct gaps share one row.</td><td>Do not merge gaps.</td><td>&ldquo;Split into separate GAP IDs.&rdquo;</td></tr>
+        <tr><td>Coverage percentage was asserted.</td><td>Computed from counts.</td><td>&ldquo;Recompute from Covered over Baseline Items and show the arithmetic.&rdquo;</td></tr>
+        <tr><td>No baseline named.</td><td>Baseline is mandatory.</td><td>&ldquo;State the baseline and comparison artefact in Scope of Analysis.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Requirement analysis</b><small>01-requirement-analysis-RICEPOT.md</small><span>When baseline gaps mean the requirements themselves are unclear.</span></div>
+      <div class="card"><b>Test coverage</b><small>17-test-coverage-CLEAR.md</small><span>When coverage needs assertion-level depth rather than presence.</span></div>
+      <div class="card"><b>RTM</b><small>06-rtm-RICEPOT.md</small><span>When the closure evidence must live in a release-gate artefact.</span></div>
+    </div>
+    <p>Gap IDs are the unit of follow-up. Assign them, track them, and reconcile them by ID each cycle — re-describing the same gap in fresh words is how gaps survive for months.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/gap-analysis/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: gap-analysis
+description: Compare a baseline artefact against what exists, producing a typed gap register with impact ratings, owners, closure actions, and computed coverage before and after closure. Use when requirements, coverage, environment, or automation may have holes.
+---
+
+<b>Trigger phrases:</b> &ldquo;gap analysis&rdquo;, &ldquo;what&rsquo;s missing from our coverage&rdquo;, &ldquo;compare PRD to test cases&rdquo;, &ldquo;find the holes&rdquo;.
+
+<b>Procedure:</b> define baseline → enumerate items → compare → classify gaps → rate impact → assign owners → closure actions → coverage math → priorities → reconcile → assumptions → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/11-gap-analysis-RICEPOT.md</span>
+    <span><b>Alternative:</b> If the gaps are purely about one defect&rsquo;s ambiguity, <code>01-requirement-analysis-RICEPOT.md</code> produces a lighter gap register scoped to that requirement set.</span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automation Code Generation — How to Use the RICE-POT Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Automation Code Generation — RICE-POT reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>15-automation-code-generation-RICEPOT.md</strong></div>
+      <div><span>Framework</span><strong>RICE-POT</strong></div>
+      <div><span>Task</span><strong>Runnable automation from supplied sources</strong></div>
+      <div><span>Guide</span><strong>15 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Generates automation code that compiles and runs without invented selectors, endpoints, or framework APIs — with assumptions and missing inputs declared in registers instead of being silently encoded in the code.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You are converting test cases into Playwright, Selenium, or API automation and the output has to actually run, not merely look plausible.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>You are generating test cases rather than code — use <code>02-test-case-design-RICEPOT.md</code>. The anti-hallucination rules here are stricter and will strip case design.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>RICE-POT is chosen for this task because the Parameters section is the strongest anti-invention fence available: no trace, no selector.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">R</span><div><b>Role</b><small>Who the model is and the standard it is held to.</small></div></div>
+      <div class="letter"><span class="key">I</span><div><b>Instructions</b><small>The numbered procedure. This is the part that must not be softened.</small></div></div>
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>The only section you edit per run — product, sources, constraints.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Example</b><small>A locked sample row showing the exact expected shape.</small></div></div>
+      <div class="letter"><span class="key">P</span><div><b>Parameters</b><small>Anti-hallucination rules: determinism, exact fallback phrases, allowed values.</small></div></div>
+      <div class="letter"><span class="key">O</span><div><b>Output</b><small>Fixed sections in a fixed order with fixed columns.</small></div></div>
+      <div class="letter"><span class="key">T</span><div><b>Tone</b><small>How the answer should read. No praise, no filler.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> R, I, E, P, O and T stay as written. Only <b>C — Context</b> changes between runs. If you find yourself editing I, P or O, the template is being used for the wrong task.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>The catalogue is what makes this template work. Selectors, endpoints, and the existing project conventions must be supplied, or the output is fiction with good formatting.</p>
+    <ul>
+      <li><b>Stack and versions</b> — language, framework, runner. Version matters for API availability.</li>
+      <li><b>Existing test file as reference</b> — so conventions are copied, not invented.</li>
+      <li><b>Page objects, DOM snapshot, or OpenAPI</b> — the supplied catalogue of selectors and endpoints.</li>
+      <li><b>Application URL and configuration approach</b> — env vars, config file, or fixture.</li>
+      <li><b>Test cases to automate</b> — with IDs, so each generated test maps to one case.</li>
+      <li><b>Credentials</b> — as configuration placeholders only.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[e.g. Java 17 + Selenium 4 / TypeScript + Playwright 1.5x]</code></td><td>Stack and versions, precisely.</td><td>Java 17, Selenium 4.27</td></tr>
+        <tr><td><code>[TestNG / JUnit 5 / Playwright test / pytest]</code></td><td>The runner, because imports differ.</td><td>TestNG</td></tr>
+        <tr><td><code>[PASTE EXISTING TEST FILE AS REFERENCE]</code></td><td>One real file from the repo.</td><td>ValidLoginTests.java</td></tr>
+        <tr><td><code>[URL]</code></td><td>Application under test.</td><td>https://app.vwo.com/</td></tr>
+        <tr><td><code>[PAGE OBJECTS / DOM SNAPSHOT / OPENAPI / REQUIREMENTS]</code></td><td>The catalogue that authorises selectors.</td><td>DOM snapshot of the login page</td></tr>
+        <tr><td><code>[ENV VARS / CONFIG FILE / FIXTURE]</code></td><td>Where credentials and URLs come from.</td><td>config.properties + env vars</td></tr>
+        <tr><td><code>[PASTE TEST CASES WITH IDS]</code></td><td>Scenarios to automate, with IDs.</td><td>VWO-LOGIN-TC-001, TC-004</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Omitting the DOM snapshot. The model then invents plausible-looking IDs like <code>login-username</code>, the code compiles, and every test fails at the first findElement. Missing selectors belong in the register, not the code.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Six sections. The two registers are the honest part of the output: what was assumed, and what was missing.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Assumptions Register</b></td><td><span class="yes">Yes</span></td><td>Assumption | Basis | Impact If Wrong; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Missing-Input Register</b></td><td><span class="yes">Yes</span></td><td>GAP ID | Missing Selector/Endpoint/API | Effect On Code; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Generated Code</b></td><td><span class="yes">Yes</span></td><td>One fenced block per file, target path as heading</td></tr>
+        <tr><td><b>Configuration Required</b></td><td><span class="yes">Yes</span></td><td>Variable | Purpose | Example placeholder</td></tr>
+        <tr><td><b>How To Run</b></td><td><span class="yes">Yes</span></td><td>Exact command for the stated runner</td></tr>
+        <tr><td><b>Self-Verification Notes</b></td><td><span class="yes">Yes</span></td><td>Statically checked vs needs a real run</td></tr>
+      </tbody>
+    </table>
+    <p>Rules: zero invented selectors, zero hardcoded secrets, zero fixed sleeps. A missing locator becomes a <code>TODO: locator not supplied (GAP-xx)</code> comment plus a disabled test with a reason.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — the missing selector and missing endpoint are declared in the register, and the generated locators are traceable to the supplied DOM snapshot.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr><td><b>Missing-Input Register</b></td><td><span class="id">GAP-08</span> — no login endpoint or API contract supplied — API-layer login test cannot be written.<br><span class="id">GAP-11</span> — dashboard success element not supplied — assertion target unknown; test marked @Disabled.</td></tr>
+        <tr><td><b>Generated Code</b></td><td><code>public LoginPage open() { driver.get(config.baseUrl()); return this; }</code><br>Locators taken from the supplied DOM snapshot: <code>By.id("login-username")</code>, <code>By.id("login-password")</code>, <code>By.id("js-login-btn")</code>.</td></tr>
+        <tr><td><b>Configuration Required</b></td><td><code>baseUrl</code>, <code>email</code>, <code>password</code> — read from <code>config.properties</code> or env vars, never inlined.</td></tr>
+        <tr><td><b>How To Run</b></td><td><code>mvn -Dtest=ValidLoginTests test</code></td></tr>
+        <tr><td><b>Self-Verification</b></td><td>Statically checked: imports match Selenium 4, no sleeps, each test independent. Not run: execution requires the real DOM and an account.</td></tr>
+      </tbody>
+    </table>
+    <p>Note the last row. Generated code has not been executed, and the output says so rather than claiming green.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Eight checks. The last one is the most important: generated code that has not been run must not be reported as passing.</p>
+    <ul class="check">
+      <li>Every locator appears in the supplied source catalogue.</li>
+      <li>No hardcoded credentials, URLs, or tokens.</li>
+      <li>No <code>sleep</code> or fixed timeout used for synchronisation.</li>
+      <li>Each test is independent and order-agnostic.</li>
+      <li>Assertions would fail on a real regression.</li>
+      <li>Every skipped or disabled test states its GAP reason.</li>
+      <li>Framework APIs match the stated version.</li>
+      <li>Generated code has not been claimed as passing — it has not been run.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Grep the output for <code>By.id(</code>, <code>By.cssSelector(</code>, and <code>http</code>. Each hit must exist in the catalogue you supplied.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>A selector appears that is not in the catalogue.</td><td>No trace, no selector.</td><td>&ldquo;Replace with a TODO comment, a GAP row, and @Disabled.&rdquo;</td></tr>
+        <tr><td>Thread.sleep or waitForTimeout appears.</td><td>No fixed sleeps.</td><td>&ldquo;Replace with an explicit wait on a supplied state.&rdquo;</td></tr>
+        <tr><td>Credentials are inlined.</td><td>Config or env only.</td><td>&ldquo;Move to config and reference the variable.&rdquo;</td></tr>
+        <tr><td>Tests depend on execution order.</td><td>Independence.</td><td>&ldquo;Reset state per test and remove shared mutable state.&rdquo;</td></tr>
+        <tr><td>An assertion is a tautology.</td><td>Assertions must detect regression.</td><td>&ldquo;Assert the observable outcome that would change on a regression.&rdquo;</td></tr>
+        <tr><td>The output claims the tests pass.</td><td>Code has not been run.</td><td>&ldquo;Replace with Self-Verification Notes: statically checked vs needs a real run.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Test case execution</b><small>04-test-case-execution-CLEAR.md</small><span>Record the first real run of the generated suite.</span></div>
+      <div class="card"><b>UI and API testing</b><small>12-ui-api-testing-CLEAR.md</small><span>Where API-layer cases come from when no contract was supplied.</span></div>
+      <div class="card"><b>Test coverage</b><small>17-test-coverage-CLEAR.md</small><span>Decide what deserves automating first.</span></div>
+    </div>
+    <p>Ship generated code as a draft. Run it locally before it reaches CI — the registers tell the reviewer exactly which parts were guesses and which merely need data.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/automation-code-generation/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: automation-code-generation
+description: Generate runnable Playwright, Selenium, or API automation code using only supplied selectors, endpoints, and framework APIs, with assumptions and missing-input registers and no hardcoded secrets or fixed sleeps. Use when converting test cases into automation.
+---
+
+<b>Trigger phrases:</b> &ldquo;automate this test case&rdquo;, &ldquo;write a Playwright test for&rdquo;, &ldquo;generate Selenium code&rdquo;, &ldquo;convert these cases to automation&rdquo;.
+
+<b>Procedure:</b> ingest catalogue → assumptions register → missing-input register → generate code per file → config spec → run command → static self-check → declare unverified.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/15-automation-code-generation-RICEPOT.md</span>
+    <span><b>Alternative:</b> If you are generating automation <i>strategy</i> rather than code, use <code>17-test-coverage-CLEAR.md</code> to decide what deserves automating first.</span>
+  </div>
+
+</div>
+</body>
+</html>

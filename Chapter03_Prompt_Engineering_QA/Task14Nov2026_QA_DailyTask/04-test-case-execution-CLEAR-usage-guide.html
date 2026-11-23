@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Case Execution — How to Use the CLEAR Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Test Case Execution — CLEAR reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>04-test-case-execution-CLEAR.md</strong></div>
+      <div><span>Framework</span><strong>CLEAR</strong></div>
+      <div><span>Task</span><strong>Evidence-backed execution record</strong></div>
+      <div><span>Guide</span><strong>04 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Records what actually happened when you ran a suite: per-step status, evidence reference, case-level roll-up, failures, and blockers — with a hard rule that nothing is Passed without evidence.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You are executing an existing suite against a build and need a record that survives audit. This is the document a release decision is argued from.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>The test cases do not exist yet — use <code>02-test-case-design-RICEPOT.md</code>. Recording execution of cases you invented is not execution.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>CLEAR exists to stop awarded passes. The Limits section lists the five allowed statuses and the rule that missing evidence means missing evidence — not a pass.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>What is being run, on which build, with which evidence.</small></div></div>
+      <div class="letter"><span class="key">L</span><div><b>Limits</b><small>The fence: allowed statuses, allowed scope, what may not be invented.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Examples</b><small>Sample rows showing the exact status and evidence shape.</small></div></div>
+      <div class="letter"><span class="key">A</span><div><b>Action</b><small>The single deliverable you want returned.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Review</b><small>The checks the model must pass before returning the answer.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> Limits are the whole point of CLEAR — they stop the model awarding an unearned pass. Only <b>C — Context</b> changes between runs; never relax L to get a longer answer.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>Collect the evidence before the session, not after. Anything you cannot evidence will be recorded as &ldquo;No evidence supplied.&rdquo;</p>
+    <ul>
+      <li><b>Test cases with steps</b> — the actual cases being run, with their IDs. Execution cannot add or rewrite them.</li>
+      <li><b>Build and environment</b> — build ID, URL, browser version, OS, device.</li>
+      <li><b>Execution window</b> — start and end time, so duration is defensible.</li>
+      <li><b>Evidence captures</b> — screenshots, logs, HAR, video, labelled so they can be referenced per step.</li>
+      <li><b>Known blockers</b> — missing accounts, unavailable services, so Blocked rows have a named cause.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:40%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[PRODUCT, MODULE]</code></td><td>What is under test.</td><td>VWO — Login Dashboard</td></tr>
+        <tr><td><code>[BUILD ID]</code></td><td>The build under test, not the branch name.</td><td>2026.11.15-rc1</td></tr>
+        <tr><td><code>[URL, BROWSER + VERSION, OS, DEVICE]</code></td><td>Everything needed to re-run the session.</td><td>Chrome 141 / Windows 11 / desktop</td></tr>
+        <tr><td><code>[DATE-TIME START → END]</code></td><td>The real window, including stalls.</td><td>2026-11-15 09:10 → 10:25</td></tr>
+        <tr><td><code>[PASTE CASE IDs AND STEPS]</code></td><td>The cases to execute, verbatim.</td><td>VWO-LOGIN-TC-001, TC-002, TC-004</td></tr>
+        <tr><td><code>[SCREENSHOTS, LOGS, HAR, VIDEO — or &quot;None&quot;]</code></td><td>Label evidence so steps can cite it.</td><td>screenshots 01–06</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Supplying case IDs without the steps. The model cannot record a per-step log against steps it cannot see, so every case comes back as Blocked — which is honest but useless.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Four sections, fixed order. The step-level log is the evidence; the case-level result is the roll-up; both must agree.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Execution Summary</b></td><td><span class="yes">Yes</span></td><td>Total / Passed / Failed / Blocked / Not Run / Skipped + pass rate</td></tr>
+        <tr><td><b>Step-Level Log</b></td><td><span class="yes">Yes</span></td><td>TC ID | Step | Action | Expected | Status | Evidence</td></tr>
+        <tr><td><b>Case-Level Result</b></td><td><span class="yes">Yes</span></td><td>TC ID | Overall Status | Observed Result | Defect Ref | Notes</td></tr>
+        <tr><td><b>Failures</b></td><td><span class="yes">Yes</span></td><td>TC ID | Step | Expected | Actual | Suggested Severity; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Blockers</b></td><td><span class="yes">Yes</span></td><td>TC ID | What Blocked Execution | Owner To Unblock; may say &ldquo;None&rdquo;</td></tr>
+      </tbody>
+    </table>
+    <p>Allowed statuses, exactly five: <code>Passed</code> / <code>Failed</code> / <code>Blocked</code> / <code>Not Run</code> / <code>Skipped</code>. No status outside that list exists, and summary counts must equal table rows.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — a pass with evidence, a fail with an observed result, and a block with a stated cause.</p>
+    <table>
+      <thead><tr><th style="width:18%">TC ID</th><th style="width:7%">Step</th><th style="width:24%">Action</th><th style="width:24%">Expected</th><th style="width:12%">Status</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td><span class="id">VWO-LOGIN-TC-001</span></td><td>1</td><td>Open login URL</td><td>Login page loads</td><td><span class="yes">Passed</span></td><td>01.png</td></tr>
+        <tr><td><span class="id">VWO-LOGIN-TC-001</span></td><td>4</td><td>Submit valid credentials</td><td>Dashboard opens</td><td><span class="yes">Passed</span></td><td>02.png</td></tr>
+        <tr><td><span class="id">VWO-LOGIN-TC-004</span></td><td>4</td><td>Submit blank password</td><td>Submission blocked with validation</td><td><span class="no">Failed</span></td><td>04.png — form submitted, no message</td></tr>
+        <tr><td><span class="id">VWO-LOGIN-TC-007</span></td><td>2</td><td>Enter locked-account credentials</td><td>Login rejected</td><td><span class="partial">Blocked</span></td><td>No locked test account available</td></tr>
+      </tbody>
+    </table>
+    <p>TC-001 rolls up to Passed only because every one of its steps has evidence. TC-004 rolls up to Failed. TC-007 rolls up to Blocked, with the owner named in the Blockers table.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Six checks. The first two are the ones that make the record audit-proof — evidence per step, and one row per supplied case.</p>
+    <ul class="check">
+      <li>Every supplied test case appears exactly once in the case-level result.</li>
+      <li>Every <span class="yes">Passed</span> case has evidence against each of its steps.</li>
+      <li>Every <span class="no">Failed</span> case has a concrete observed actual result.</li>
+      <li>Every <span class="partial">Blocked</span> case names the blocker and the owner who can unblock it.</li>
+      <li>No status outside the five allowed values.</li>
+      <li>Summary arithmetic matches the tables.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Pick any Passed case and click through its evidence references. If a step has no artefact, that case is not Passed — it is Not Run.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>A case is Passed with no evidence for a step.</td><td>No unearned pass.</td><td>&ldquo;Downgrade to Not Run or supply the evidence reference for that step.&rdquo;</td></tr>
+        <tr><td>A case appears that was not supplied.</td><td>Use only the supplied cases.</td><td>&ldquo;Remove it and list it as out of scope.&rdquo;</td></tr>
+        <tr><td>A status reads &ldquo;In Progress&rdquo; or &ldquo;Pending&rdquo;.</td><td>Five allowed statuses only.</td><td>&ldquo;Map to Passed / Failed / Blocked / Not Run / Skipped.&rdquo;</td></tr>
+        <tr><td>A step could not run but the case is Passed.</td><td>Blocked, not Passed.</td><td>&ldquo;Set the case to Blocked and name what blocked it.&rdquo;</td></tr>
+        <tr><td>A defect ID appears that you never supplied.</td><td>Do not assign defect IDs.</td><td>&ldquo;Replace with: Defect not yet raised.&rdquo;</td></tr>
+        <tr><td>Summary pass rate does not match the tables.</td><td>Arithmetic must reconcile.</td><td>&ldquo;Recount from the case-level table and recompute the rate.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Bug report</b><small>03-bug-report-CRISP.md</small><span>Turn each failure row into a reproducible report.</span></div>
+      <div class="card"><b>RTM</b><small>06-rtm-RICEPOT.md</small><span>Attach execution status to each requirement for traceability.</span></div>
+      <div class="card"><b>Status report</b><small>13-status-report-STAR.md</small><span>Roll execution counts into stakeholder reporting.</span></div>
+    </div>
+    <p>Failures move into bug reports; blocked cases move into the gap analysis or environment queue. Nothing should sit in this record unactioned — a Blocked row without an owner is just a delay with paperwork.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/test-case-execution/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: test-case-execution
+description: Produce an evidence-backed execution record — per-step log, case-level status, failures, and blockers — using only the supplied test cases and without inventing results. Use when running a test suite against a build.
+---
+
+<b>Trigger phrases:</b> &ldquo;record execution results&rdquo;, &ldquo;log test run&rdquo;, &ldquo;execution report for this build&rdquo;, &ldquo;run these test cases and record status&rdquo;.
+
+<b>Procedure:</b> load cases → record per step → roll up case status → list failures → list blockers → verify no unearned Passed → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/04-test-case-execution-CLEAR.md</span>
+    <span><b>Alternative:</b> If a failed case must become a filed defect, hand the failure row to <code>03-bug-report-CRISP.md</code>.</span>
+  </div>
+
+</div>
+</body>
+</html>

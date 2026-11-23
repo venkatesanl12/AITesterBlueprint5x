@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Scrum Notes — How to Use the STAR Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Daily Scrum Notes — STAR reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>10-daily-scrum-notes-STAR.md</strong></div>
+      <div><span>Framework</span><strong>STAR</strong></div>
+      <div><span>Task</span><strong>Stand-up update plus durable note</strong></div>
+      <div><span>Guide</span><strong>10 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Converts raw daily activity into two artefacts at once: a spoken update under 60 seconds, and a written note that keeps the evidence, owners, and blocker ages that a verbal update loses.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You are writing your daily stand-up update, or keeping a team scrum log that must still be useful three weeks later.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>The audience is a stakeholder rather than the team — use <code>13-status-report-STAR.md</code>, where metrics and trend replace task granularity.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>STAR is native to stand-up: Done / Doing / Blockers maps cleanly onto Situation, Task, Action, Result when you keep the evidence attached.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">S</span><div><b>Situation</b><small>The release, change, budget and constraints you supply.</small></div></div>
+      <div class="letter"><span class="key">T</span><div><b>Task</b><small>The one outcome required, stated in a sentence.</small></div></div>
+      <div class="letter"><span class="key">A</span><div><b>Action</b><small>The ordered analysis steps the model must perform.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Result</b><small>The numbered deliverable sections and their shape.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> STAR is a planning and reporting frame, so the numbers live in S and the contract lives in R. Only <b>S — Situation</b> changes between runs.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>The written note is only as searchable as the raw material you paste. Ticket IDs, case IDs, and build status are what make it survive.</p>
+    <ul>
+      <li><b>Date and sprint</b> — the note must be findable later.</li>
+      <li><b>Your assigned work</b> — tickets or case IDs owned, so progress is anchored.</li>
+      <li><b>Build status</b> — which build today&rsquo;s activity was against.</li>
+      <li><b>Raw notes</b> — ticket updates, execution results, defect IDs. Paste them; do not pre-summarise.</li>
+      <li><b>Sprint goal</b> — one line, so the goal impact verdict is possible.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Situation block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[DATE]</code></td><td>The day the note covers.</td><td>2026-11-15</td></tr>
+        <tr><td><code>[PROJECT, SPRINT]</code></td><td>Where the work sits.</td><td>VWO, Sprint 12</td></tr>
+        <tr><td><code>[QA ENGINEER / QA LEAD]</code></td><td>Your role, so the note reads correctly to others.</td><td>QA Engineer</td></tr>
+        <tr><td><code>[TICKETS / CASES OWNED]</code></td><td>What you were assigned.</td><td>VWO-214 regression suite; TC-001–TC-012</td></tr>
+        <tr><td><code>[BUILD ID AND STATUS]</code></td><td>Today&rsquo;s build and whether it was testable.</td><td>rc1, stable</td></tr>
+        <tr><td><code>[PASTE NOTES, TICKET UPDATES, EXECUTION RESULTS]</code></td><td>Raw material, unsorted.</td><td>Sanity checklist, DEF-101 raised</td></tr>
+        <tr><td><code>[ONE LINE]</code></td><td>The sprint goal, verbatim.</td><td>Ship login validation fix with no open Critical</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Pre-summarising the raw notes into &ldquo;worked on login&rdquo;. The model then has nothing to evidence, and the written note becomes a diary entry rather than a record.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Five sections. The spoken update is for the room; the written table is for the record. Both come from the same evidence.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Spoken Update</b></td><td><span class="yes">Yes</span></td><td>Three sentences maximum — Done / Doing / Blockers</td></tr>
+        <tr><td><b>Written Notes</b></td><td><span class="yes">Yes</span></td><td>Table: Item | Type | Evidence | Owner | Status</td></tr>
+        <tr><td><b>Sprint Goal Impact</b></td><td><span class="yes">Yes</span></td><td>On track / At risk / Blocked + reason</td></tr>
+        <tr><td><b>Blockers</b></td><td><span class="yes">Yes</span></td><td>Blocker | Owner | Days Open | Needed By; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Tomorrow</b></td><td><span class="yes">Yes</span></td><td>Numbered actions with owners</td></tr>
+      </tbody>
+    </table>
+    <p>Every written row needs evidence — a case ID, a checklist, a defect ID, or an execution result. &ldquo;Testing in progress&rdquo; is not an evidence value.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — the spoken version is three sentences, the written version keeps the IDs and the blocker age.</p>
+    <table>
+      <thead><tr><th style="width:34%">Item</th><th style="width:12%">Type</th><th style="width:24%">Evidence</th><th style="width:16%">Owner</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Completed login sanity (SAN-01, SAN-02)</td><td>Completed</td><td>Sanity checklist 2026-11-15</td><td>A. Sharma</td><td><span class="yes">Done</span></td></tr>
+        <tr><td>Raised DEF-101 blank password accepted</td><td>Completed</td><td>Defect log row DEF-101</td><td>A. Sharma</td><td><span class="yes">Done</span></td></tr>
+        <tr><td>Regression suite for login</td><td>In Progress</td><td>Not yet produced</td><td>A. Sharma</td><td>Due today</td></tr>
+        <tr><td>Blocked on locked test account</td><td>Blocker</td><td>GAP-02 still open</td><td>R. Iyer</td><td><span class="partial">Open 3 days</span></td></tr>
+      </tbody>
+    </table>
+    <p><b>Spoken:</b> &ldquo;Yesterday I completed the login sanity pass on build rc1 — 2 of 2 checks passed — and raised DEF-101 for the blank-password defect. Today I&rsquo;m writing the regression suite for the login area. No blockers.&rdquo; <b>Sprint goal impact:</b> On track.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Six checks. The 60-second read-aloud test catches more bloat than any rule about word counts.</p>
+    <ul class="check">
+      <li>Every Done item names a concrete artefact or ID.</li>
+      <li>Every Doing item names the next action, not a vague activity.</li>
+      <li>Blockers include owner and days open.</li>
+      <li>Sprint goal verdict is consistent with the notes.</li>
+      <li>Spoken version reads aloud in under 60 seconds.</li>
+      <li>No invented counts or IDs.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Read the spoken update aloud with a timer. If you need the written table to make sense of it, it is too long.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>A Doing row says &ldquo;testing in progress&rdquo;.</td><td>Name what is being tested.</td><td>&ldquo;Replace with the concrete artefact and case IDs.&rdquo;</td></tr>
+        <tr><td>A Done item has no evidence.</td><td>Evidence required.</td><td>&ldquo;Move it to Doing and state what evidence is missing.&rdquo;</td></tr>
+        <tr><td>A blocker has no age.</td><td>Days open computed.</td><td>&ldquo;Compute from the date it was first raised.&rdquo;</td></tr>
+        <tr><td>The spoken update runs to eight sentences.</td><td>Three sentences maximum.</td><td>&ldquo;Cut to three; move detail into the written table.&rdquo;</td></tr>
+        <tr><td>Counts appear that you never supplied.</td><td>No invented numbers.</td><td>&ldquo;Write Not supplied. and remove the count.&rdquo;</td></tr>
+        <tr><td>Sprint goal verdict contradicts the blockers.</td><td>Consistency.</td><td>&ldquo;Re-derive the verdict from the blocker rows.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Status report</b><small>13-status-report-STAR.md</small><span>Weekly rollup of the daily detail.</span></div>
+      <div class="card"><b>Test case execution</b><small>04-test-case-execution-CLEAR.md</small><span>Where the execution evidence in the note comes from.</span></div>
+      <div class="card"><b>Defect tracking</b><small>05-defect-tracking-CRISP.md</small><span>Keeps the defect IDs quoted in the note accurate.</span></div>
+    </div>
+    <p>These notes are the audit trail of what you said you did. Keep them in one place per sprint — a searchable log is worth more than a polished one.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/daily-scrum-notes/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: daily-scrum-notes
+description: Turn raw daily QA activity into a short spoken stand-up update plus a durable written scrum note with evidence, blockers, sprint-goal impact, and tomorrow&rsquo;s actions. Use when preparing a daily stand-up or maintaining a scrum log.
+---
+
+<b>Trigger phrases:</b> &ldquo;daily scrum notes&rdquo;, &ldquo;stand-up update&rdquo;, &ldquo;what do I say in standup&rdquo;, &ldquo;scrum log for today&rdquo;.
+
+<b>Procedure:</b> ingest raw activity → classify Done/Doing/Blockers with evidence → spoken summary → written table → goal impact → blockers with age → tomorrow&rsquo;s actions → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/10-daily-scrum-notes-STAR.md</span>
+    <span><b>Alternative:</b> If the audience is a stakeholder rather than the team, use <code>13-status-report-STAR.md</code> so metrics and trend replace task granularity.</span>
+  </div>
+
+</div>
+</body>
+</html>

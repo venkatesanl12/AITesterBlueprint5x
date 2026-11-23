@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Case Design — How to Use the RICE-POT Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Test Case Design — RICE-POT reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>02-test-case-design-RICEPOT.md</strong></div>
+      <div><span>Framework</span><strong>RICE-POT</strong></div>
+      <div><span>Task</span><strong>Test case design &amp; traceability</strong></div>
+      <div><span>Guide</span><strong>02 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Turns an approved requirement set into executable test cases a new team member could run without asking a question — each case traced to one requirement, each expected result observable, each unknown marked Blocked against a GAP ID.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You have approved requirements and need cases that can be executed, reviewed, and traced. This is the standard step after requirement analysis and before execution.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>Requirements are still ambiguous or untestable — run <code>01-requirement-analysis-RICEPOT.md</code> first, or you will be writing cases that cannot be asserted.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>Each letter is a section of the prompt. The Instructions section is where the case-design discipline lives; the Parameters section is where hallucination is fenced off.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">R</span><div><b>Role</b><small>Who the model is and the standard it is held to.</small></div></div>
+      <div class="letter"><span class="key">I</span><div><b>Instructions</b><small>The numbered procedure. This is the part that must not be softened.</small></div></div>
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>The only section you edit per run — product, sources, constraints.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Example</b><small>A locked sample row showing the exact expected shape.</small></div></div>
+      <div class="letter"><span class="key">P</span><div><b>Parameters</b><small>Anti-hallucination rules: determinism, exact fallback phrases, allowed values.</small></div></div>
+      <div class="letter"><span class="key">O</span><div><b>Output</b><small>Fixed sections in a fixed order with fixed columns.</small></div></div>
+      <div class="letter"><span class="key">T</span><div><b>Tone</b><small>How the answer should read. No praise, no filler.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> R, I, E, P, O and T stay as written. Only <b>C — Context</b> changes between runs. If you find yourself editing I, P or O, the template is being used for the wrong task.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>The template can only design cases for what you supply. Anything missing becomes a Blocked case, which is correct behaviour but slows the cycle down.</p>
+    <ul>
+      <li><b>Approved requirements with IDs</b> — if they have no IDs, run template 01 first so IDs exist to trace against.</li>
+      <li><b>Existing test cases</b> — so the model does not duplicate them, and can say so in Design Notes.</li>
+      <li><b>Environment details</b> — URL, browser, build. This shapes the steps.</li>
+      <li><b>Target case count</b> if you have one, so coverage is deliberate rather than endless.</li>
+      <li><b>Credentials</b> — as placeholders only. Never paste real ones.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:32%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[PRODUCT, MODULE]</code></td><td>Product and the specific module being covered.</td><td>VWO — Login</td></tr>
+        <tr><td><code>[PASTE APPROVED REQUIREMENTS]</code></td><td>The requirement statements with their IDs. Do not paste a PRD the requirements were not derived from.</td><td>REQ-001 … REQ-004 as approved</td></tr>
+        <tr><td><code>[PASTE OR &quot;None&quot;]</code></td><td>Existing cases, so duplicates are avoided and referenced.</td><td>None</td></tr>
+        <tr><td><code>[URL, BROWSER, BUILD]</code></td><td>Where the cases will run, so steps are literal.</td><td>https://app.vwo.com/, Chrome 141, build 2026.11.15-rc1</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Supplying the PRD instead of the approved requirements. The model then invents its own requirement IDs and the coverage map stops reconciling with the RTM.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Four sections, fixed order. The Test Cases table is ten columns wide — if any column is missing, the case cannot be executed or traced.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Coverage Map</b></td><td><span class="yes">Yes</span></td><td>Table, 3 columns, one row per requirement</td></tr>
+        <tr><td><b>Test Cases</b></td><td><span class="yes">Yes</span></td><td>Table, 10 columns, fixed order, unique sequential IDs</td></tr>
+        <tr><td><b>Blocked Cases</b></td><td><span class="yes">Yes</span></td><td>Table, 3 columns; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Design Notes</b></td><td><span class="yes">Yes</span></td><td>Short bullets on assumptions avoided and exclusions</td></tr>
+      </tbody>
+    </table>
+    <p>Fixed values: <code>Type</code> is Positive / Negative / Boundary / Security / Access Control; <code>Confidence</code> is Verified / Inference (low confidence) / Blocked; <code>Priority</code> is P1–P4. Nothing outside these lists is valid.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template. Note that the blocked case does not guess the validation message — it states the gap and what is missing.</p>
+    <table>
+      <thead><tr><th style="width:17%">TC ID</th><th style="width:9%">Req ID</th><th style="width:24%">Summary</th><th style="width:30%">Expected Result</th><th style="width:7%">Priority</th><th style="width:8%">Type</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td><span class="id">VWO-LOGIN-TC-001</span></td><td>REQ-001</td><td>Login with valid registered credentials</td><td>Authenticated dashboard opens</td><td>P1</td><td>Positive</td><td><span class="yes">Verified</span></td></tr>
+        <tr><td><span class="id">VWO-LOGIN-TC-004</span></td><td>REQ-002</td><td>Submit with empty password</td><td>Insufficient information to determine. (GAP-02: validation message and blocked-submit behaviour not specified.)</td><td>P1</td><td>Negative</td><td><span class="partial">Blocked</span></td></tr>
+      </tbody>
+    </table>
+    <p>Full expected-result text for TC-001 reads &ldquo;Authenticated dashboard opens&rdquo; after the four numbered steps — the excerpt above drops the steps column only for width.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Seven checks from the template. Run them before the cases leave your machine — a duplicate or an unobservable expected result costs a full execution cycle.</p>
+    <ul class="check">
+      <li>Every requirement in the coverage map has at least one case or is marked Not Covered.</li>
+      <li>No two cases test the identical check.</li>
+      <li>Steps are literal — no &ldquo;verify appropriate behaviour&rdquo; phrasing.</li>
+      <li>Expected results describe something a tester can observe on screen or in a response.</li>
+      <li>No case marked Passed or Failed — execution has not happened.</li>
+      <li>All credentials are placeholders.</li>
+      <li>Blocked cases each cite a GAP ID and say what is missing.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Read each expected result aloud. If it is not something you could point at on screen or in a response body, the case is not executable yet.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>Two checks merged into one case.</td><td>Do not merge two checks.</td><td>&ldquo;Split into one check per case and renumber sequentially.&rdquo;</td></tr>
+        <tr><td>Expected result says &ldquo;should work correctly&rdquo;.</td><td>Observable behaviour only.</td><td>&ldquo;Replace with the observable screen or response outcome.&rdquo;</td></tr>
+        <tr><td>A case is marked Passed.</td><td>Execution has not happened.</td><td>&ldquo;Use Verified / Inference / Blocked only. Status belongs to template 04.&rdquo;</td></tr>
+        <tr><td>Duplicate of an existing case appears.</td><td>Do not duplicate supplied cases.</td><td>&ldquo;Drop it and note the existing case ID in Design Notes.&rdquo;</td></tr>
+        <tr><td>Blocked case with no GAP ID.</td><td>Blocked cases cite a gap.</td><td>&ldquo;Add the GAP ID or make the expected result observable.&rdquo;</td></tr>
+        <tr><td>A case covers a feature the requirements never mention.</td><td>No cases outside the requirements.</td><td>&ldquo;Remove the case and list the excluded feature in Design Notes.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Test case execution</b><small>04-test-case-execution-CLEAR.md</small><span>Run the cases and record evidence per step.</span></div>
+      <div class="card"><b>RTM</b><small>06-rtm-RICEPOT.md</small><span>Prove each requirement has at least one case and one result.</span></div>
+      <div class="card"><b>UI/API testing</b><small>12-ui-api-testing-CLEAR.md</small><span>When the feature needs request/response assertions, not screen steps.</span></div>
+    </div>
+    <p>The <code>Confidence</code> column is the hand-off contract. Execution must not "promote" an Inference case to a pass without an observable result, and it must not run a Blocked case at all.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/test-case-design/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: test-case-design
+description: Generate traceable, executable test cases from approved requirements, with a coverage map, blocked-case register, and anti-hallucination labels. Use when designing functional test cases for a module or ticket.
+---
+
+<b>Trigger phrases:</b> &ldquo;write test cases for&rdquo;, &ldquo;design tests for this story&rdquo;, &ldquo;generate functional test cases&rdquo;, &ldquo;cover this requirement&rdquo;.
+
+<b>Procedure:</b> read requirements → coverage map → cases in positive/negative/boundary/access order → blocked register → design notes → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/02-test-case-design-RICEPOT.md</span>
+    <span><b>Alternative:</b> For endpoint-driven modules use <code>12-ui-api-testing-CLEAR.md</code>, so request/response assertions replace screen steps.</span>
+  </div>
+
+</div>
+</body>
+</html>

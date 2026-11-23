@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI and API Testing — How to Use the CLEAR Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">UI and API Testing — CLEAR reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>12-ui-api-testing-CLEAR.md</strong></div>
+      <div><span>Framework</span><strong>CLEAR</strong></div>
+      <div><span>Task</span><strong>Combined UI, API and hybrid verification</strong></div>
+      <div><span>Guide</span><strong>12 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Designs and records UI cases, API cases, and hybrid consistency cases for one feature — each API case asserting status, body shape, and a field value, each negative case naming the layer that should reject it.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>A feature must be verified at both layers, and you need proof that the UI reflects what the API actually returned rather than what it was supposed to return.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>Only screen behaviour matters — use <code>02-test-case-design-RICEPOT.md</code>. Adding API cases you cannot call adds noise, not coverage.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>CLEAR works here because the Limits list is where hallucination is fenced: no invented endpoints, fields, headers, or status codes — ever.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>What is being run, on which build, with which evidence.</small></div></div>
+      <div class="letter"><span class="key">L</span><div><b>Limits</b><small>The fence: allowed statuses, allowed scope, what may not be invented.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Examples</b><small>Sample rows showing the exact status and evidence shape.</small></div></div>
+      <div class="letter"><span class="key">A</span><div><b>Action</b><small>The single deliverable you want returned.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Review</b><small>The checks the model must pass before returning the answer.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> Limits are the whole point of CLEAR — they stop the model awarding an unearned pass. Only <b>C — Context</b> changes between runs; never relax L to get a longer answer.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>The contract is the critical input. Without an OpenAPI spec or sample responses, the API cases become gaps — which is the correct outcome, not a failure of the template.</p>
+    <ul>
+      <li><b>UI details</b> — URL, screen, and the flows in scope.</li>
+      <li><b>API base URL and endpoints</b> — supplied, not assumed.</li>
+      <li><b>Contract</b> — OpenAPI spec or real sample request/response pairs.</li>
+      <li><b>Auth method</b> — token type and header name, as placeholders only.</li>
+      <li><b>Environment and seed data</b> — build, browser, known IDs and records.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[FEATURE]</code> / <code>[PRODUCT, MODULE]</code></td><td>What is being verified end to end.</td><td>VWO — Login</td></tr>
+        <tr><td><code>[URL, SCREEN]</code></td><td>The UI under test.</td><td>https://app.vwo.com/</td></tr>
+        <tr><td><code>[BASE URL]</code></td><td>API base URL, or write not supplied.</td><td>[NOT SUPPLIED]</td></tr>
+        <tr><td><code>[PASTE REQS, OPENAPI SPEC, OR SAMPLE RESPONSES]</code></td><td>Whatever proves the contract. Samples are enough.</td><td>PRD §4 only; no OpenAPI spec supplied</td></tr>
+        <tr><td><code>[TOKEN TYPE, HEADER NAME — placeholders only]</code></td><td>How auth works, never a real token.</td><td><token> in Authorization header</td></tr>
+        <tr><td><code>[ENV, BUILD, BROWSER]</code></td><td>Where the cases run.</td><td>staging, rc1, Chrome 141</td></tr>
+        <tr><td><code>[SEED DATA, EXISTING IDs]</code></td><td>Records you can rely on.</td><td><registered_email> account, <locked_account></td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Supplying a UI URL and leaving the API contract blank, then expecting API cases. The honest output is a blocked register citing a GAP — which you then take to whoever owns the spec.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Six sections. Hybrid cases are the ones people skip and the ones that catch silent failure — a green UI over a broken response.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Coverage Map</b></td><td><span class="yes">Yes</span></td><td>Requirement | UI Case IDs | API Case IDs | Hybrid Case IDs</td></tr>
+        <tr><td><b>UI Test Cases</b></td><td><span class="yes">Yes</span></td><td>ID | Screen | Action | Expected Element State | Confidence</td></tr>
+        <tr><td><b>API Test Cases</b></td><td><span class="yes">Yes</span></td><td>ID | Method | Path | Payload | Expected Status | Body Assertion | Rejecting Layer</td></tr>
+        <tr><td><b>Hybrid Consistency Cases</b></td><td><span class="yes">Yes</span></td><td>ID | Flow | UI Expectation | API Expectation | Consistency Check</td></tr>
+        <tr><td><b>Environment and Auth</b></td><td><span class="yes">Yes</span></td><td>Placeholders only</td></tr>
+        <tr><td><b>Blocked Cases</b></td><td><span class="yes">Yes</span></td><td>ID | GAP ID | Missing Contract Detail; may say &ldquo;None&rdquo;</td></tr>
+      </tbody>
+    </table>
+    <p>Every API case asserts three things: HTTP status, response body shape, and at least one field-level value. Every negative case names the rejecting layer: client, gateway, or service.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — the UI case proceeds, and the hybrid case is honestly blocked because no contract was supplied.</p>
+    <table>
+      <thead><tr><th style="width:12%">ID</th><th style="width:12%">Layer</th><th style="width:24%">Action</th><th style="width:40%">Expected</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td><span class="id">UI-01</span></td><td>UI</td><td>Submit valid credentials</td><td>Dashboard opens; account name visible in header</td><td><span class="yes">Verified</span></td></tr>
+        <tr><td><span class="id">HYB-01</span></td><td>Hybrid</td><td>Capture the login request during UI submit</td><td>Request payload contains email and password; response returns an auth token</td><td><span class="partial">Blocked</span></td></tr>
+      </tbody>
+    </table>
+    <p>HYB-01 is blocked by GAP-08: endpoint path, request schema, and response body were not supplied. The UI cases still proceed independently — a partial run beats a fabricated contract.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Six checks. The first and last are the same discipline from two angles: if you did not supply it, it must not appear.</p>
+    <ul class="check">
+      <li>No endpoint, field, header, or status code appears that was not supplied.</li>
+      <li>Each API case asserts status, body shape, and a field value.</li>
+      <li>Each negative case names the layer expected to reject.</li>
+      <li>Hybrid cases genuinely compare UI outcome to API outcome.</li>
+      <li>Auth tokens and credentials are placeholders.</li>
+      <li>Blocked cases cite a GAP ID rather than guessing the contract.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Search the output for <code>/api/</code> and <code>200</code>. Every hit must map to something you supplied — otherwise the model has invented the contract.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>An endpoint appears that you never supplied.</td><td>Only supplied endpoints.</td><td>&ldquo;Remove the case and raise a GAP for the missing contract.&rdquo;</td></tr>
+        <tr><td>An API case asserts only the status code.</td><td>Status + shape + field.</td><td>&ldquo;Add body-shape and one field-level assertion.&rdquo;</td></tr>
+        <tr><td>A negative case does not name the rejecting layer.</td><td>Rejecting layer required.</td><td>&ldquo;State client, gateway, or service.&rdquo;</td></tr>
+        <tr><td>Exact error text is asserted.</td><td>Only if supplied.</td><td>&ldquo;Assert the rejection, not the wording.&rdquo;</td></tr>
+        <tr><td>No hybrid case exists.</td><td>At least one per flow.</td><td>&ldquo;Add a UI-capture to API-response comparison.&rdquo;</td></tr>
+        <tr><td>A real token or password appears.</td><td>Placeholders only.</td><td>&ldquo;Replace with &lt;token&gt; / &lt;valid_password&gt;.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Test case design</b><small>02-test-case-design-RICEPOT.md</small><span>When the feature is screen-only after all.</span></div>
+      <div class="card"><b>RTM</b><small>06-rtm-RICEPOT.md</small><span>Trace endpoints and flows back to requirements for the gate.</span></div>
+      <div class="card"><b>Automation code generation</b><small>15-automation-code-generation-RICEPOT.md</small><span>Turn the API cases into runnable requests.</span></div>
+    </div>
+    <p>The rejecting-layer column is the one that finds real defects. A 400 from the gateway instead of the service usually means validation is missing where it was supposed to live.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/ui-api-testing/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: ui-api-testing
+description: Design and record UI, API, and hybrid consistency tests for a feature, asserting status codes, response shape, and observable UI state without inventing endpoints. Use when a feature must be verified at both layers.
+---
+
+<b>Trigger phrases:</b> &ldquo;test the API for&rdquo;, &ldquo;UI and API testing&rdquo;, &ldquo;verify the endpoint&rdquo;, &ldquo;cross-check UI against API&rdquo;.
+
+<b>Procedure:</b> establish contract → UI cases → API cases → hybrid cases → negative cases with rejecting layer → blocked register → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/12-ui-api-testing-CLEAR.md</span>
+    <span><b>Alternative:</b> If you have an OpenAPI spec and need requirement-to-endpoint traceability rather than case design, use <code>06-rtm-RICEPOT.md</code> with endpoints as the test column.</span>
+  </div>
+
+</div>
+</body>
+</html>

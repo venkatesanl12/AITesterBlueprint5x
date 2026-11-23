@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR Merge / Review — How to Use the CRISP Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">PR Merge / Review — CRISP reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>16-pr-merge-review-CRISP.md</strong></div>
+      <div><span>Framework</span><strong>CRISP</strong></div>
+      <div><span>Task</span><strong>Merge-readiness decision from gates</strong></div>
+      <div><span>Guide</span><strong>16 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Decides merge readiness from evidence rather than impression: a gate checklist marking Pass / Fail / Unknown, scope-creep detection, hygiene checks, test evidence assessment, and an explicit decision with the exact evidence needed.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>You are the reviewer or approver on a pull request and the output has to be a decision someone can defend in an audit.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>You only need code-quality feedback — use <code>14-code-review-CRISP.md</code>. Merge gates and code review are different questions.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>The critical rule is that <code>Unknown</code> never counts as <code>Pass</code>. That single rule is what stops approvals on unverified assumptions.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>The situation and raw facts you supply. Per-run editable surface.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Role</b><small>The judgement role the model takes on for this document.</small></div></div>
+      <div class="letter"><span class="key">I</span><div><b>Instructions</b><small>Numbered rules plus the explicit Do NOT list.</small></div></div>
+      <div class="letter"><span class="key">S</span><div><b>Style</b><small>How terse, how structured, what vocabulary is banned.</small></div></div>
+      <div class="letter"><span class="key">P</span><div><b>Parameters</b><small>Hard limits: allowed scales, missing-data wording, length caps.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> The Role decides the judgement, the Parameters decide the limit. If the output wavers, tighten the Parameters — not the Role. Only <b>C — Context</b> changes between runs.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>Approval is only as good as the evidence supplied. If CI status was not supplied, the gate is Unknown — and Unknown blocks the decision.</p>
+    <ul>
+      <li><b>Repo and branches</b> — source to target.</li>
+      <li><b>PR title and description</b> — including whether it explains <i>why</i>.</li>
+      <li><b>Linked tickets</b> — the scope baseline.</li>
+      <li><b>Diff or file list</b> — complete. If truncated, the output must name what was not reviewed.</li>
+      <li><b>CI status and test evidence</b> — job names and results, or say not run.</li>
+      <li><b>Merge policy</b> — required approvals and required checks.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[REPO, SOURCE BRANCH → TARGET BRANCH]</code></td><td>The merge direction.</td><td>qa-web, feature/login-fix → main</td></tr>
+        <tr><td><code>[PASTE]</code></td><td>The PR description as written.</td><td>Fixes blank-password validation (DEF-101)</td></tr>
+        <tr><td><code>[JIRA / ISSUE IDs]</code></td><td>The linked tickets.</td><td>VWO-214</td></tr>
+        <tr><td><code>[PASTE FILE LIST OR DIFF]</code></td><td>Complete diff, or state it is truncated.</td><td>LoginPage.java, LoginTest.java</td></tr>
+        <tr><td><code>[PASSED / FAILED / NOT RUN — with job names]</code></td><td>Real CI state, or not run.</td><td>NOT RUN</td></tr>
+        <tr><td><code>[UNIT / INTEGRATION / E2E RESULTS, OR &quot;None supplied&quot;]</code></td><td>What actually ran.</td><td>3 new TestNG cases, local only</td></tr>
+        <tr><td><code>[NAMES]</code> / <code>[REQUIRED APPROVALS, REQUIRED CHECKS]</code></td><td>Who approves and what is mandatory.</td><td>1 approval; CI green required</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Saying &ldquo;CI is probably fine&rdquo;. If the status was not supplied it must be marked Unknown — and Unknown cannot be approved without follow-up.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Seven sections. The decision must follow mechanically from the gate statuses, not from how the diff reads.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Scope Check</b></td><td><span class="yes">Yes</span></td><td>Ticket intent vs actual diff</td></tr>
+        <tr><td><b>Merge Gate Checklist</b></td><td><span class="yes">Yes</span></td><td>Gate | Status | Evidence</td></tr>
+        <tr><td><b>Scope Creep</b></td><td><span class="yes">Yes</span></td><td>Files/areas outside ticket scope; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Hygiene Findings</b></td><td><span class="yes">Yes</span></td><td>Secrets, debug code, TODOs, dead code; may say &ldquo;None found&rdquo;</td></tr>
+        <tr><td><b>Test Evidence Assessment</b></td><td><span class="yes">Yes</span></td><td>Proven vs claimed-but-unproven</td></tr>
+        <tr><td><b>Decision</b></td><td><span class="yes">Yes</span></td><td>Approve / Approve with follow-ups / Request changes / Block</td></tr>
+        <tr><td><b>Follow-ups</b></td><td><span class="yes">Yes</span></td><td>Item | Owner | Suggested Ticket; may say &ldquo;None&rdquo;</td></tr>
+      </tbody>
+    </table>
+    <p>Gate statuses are limited to Pass / Fail / Unknown. Decisions are limited to the four values. Any Fail or Unknown must state the exact evidence or fix that would clear it.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — one Fail and one Unknown drive the decision, and each states what is needed to proceed.</p>
+    <table>
+      <thead><tr><th style="width:36%">Gate</th><th style="width:12%">Status</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>Linked ticket scope matches change</td><td><span class="yes">Pass</span></td><td>PR touches only LoginPage and LoginTest</td></tr>
+        <tr><td>Tests cover new behaviour</td><td><span class="yes">Pass</span></td><td>3 new cases: valid, invalid, blank password</td></tr>
+        <tr><td>CI executed and passed</td><td><span class="partial">Unknown</span></td><td>CI status not supplied</td></tr>
+        <tr><td>No secrets committed</td><td><span class="yes">Pass</span></td><td>Grepped diff: no credentials</td></tr>
+        <tr><td>No debug logging left in</td><td><span class="no">Fail</span></td><td>System.out.println at LoginPage.java:52</td></tr>
+        <tr><td>Reversible migration/config</td><td><span class="yes">Pass</span></td><td>No migration; config added to env template</td></tr>
+      </tbody>
+    </table>
+    <p><b>Decision: Request changes.</b> One Fail (debug logging) and one Unknown (CI status). To proceed: remove the println at LoginPage.java:52 and attach the CI job result.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Seven checks. Treat the CI line as the canary — if CI is Unknown and the decision is Approve, the gate model was not applied.</p>
+    <ul class="check">
+      <li>Every gate has Pass / Fail / Unknown with evidence.</li>
+      <li>CI status treated as Unknown unless supplied.</li>
+      <li>Scope creep assessed against the linked ticket, not against taste.</li>
+      <li>Secrets and debug code explicitly checked.</li>
+      <li>Decision is consistent with the gate results.</li>
+      <li>Unreviewed files declared.</li>
+      <li>No test result asserted that was not supplied.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Read the decision, then count the Fail and Unknown gates. Approve with any Unknown outstanding is a contract breach, not a judgement call.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>Approved on &ldquo;looks fine&rdquo;.</td><td>Evidence per gate.</td><td>&ldquo;Re-run every gate and mark Unknown wherever evidence is missing.&rdquo;</td></tr>
+        <tr><td>CI assumed passed.</td><td>Unknown unless supplied.</td><td>&ldquo;Set the gate to Unknown and request the job result.&rdquo;</td></tr>
+        <tr><td>Review drifted into refactoring advice.</td><td>Stay on gates.</td><td>&ldquo;Move suggestions to Follow-ups; keep the decision on gate status.&rdquo;</td></tr>
+        <tr><td>Unrelated files are not flagged.</td><td>Scope creep detection.</td><td>&ldquo;List the unrelated files under Scope Creep.&rdquo;</td></tr>
+        <tr><td>Secrets check is missing.</td><td>Explicit hygiene check.</td><td>&ldquo;State None found or list what was found.&rdquo;</td></tr>
+        <tr><td>A truncated diff is not mentioned.</td><td>Declare unreviewed files.</td><td>&ldquo;Name the files that were not reviewed.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Code review</b><small>14-code-review-CRISP.md</small><span>When the PR needs defect-level feedback, not just gates.</span></div>
+      <div class="card"><b>Test case execution</b><small>04-test-case-execution-CLEAR.md</small><span>Where the test evidence for a gate comes from.</span></div>
+      <div class="card"><b>Status report</b><small>13-status-report-STAR.md</small><span>Merged work feeds the release picture.</span></div>
+    </div>
+    <p>A blocked merge needs a named owner and a ticket per follow-up. Otherwise &ldquo;fix later&rdquo; becomes the same gate failing again next sprint.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/pr-merge-review/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: pr-merge-review
+description: Decide pull request merge readiness with a gate checklist covering scope, tests, CI, secrets, debug code, and reversibility, returning Approve, Approve with follow-ups, Request changes, or Block. Use when reviewing or approving a PR for merge.
+---
+
+<b>Trigger phrases:</b> &ldquo;review this PR&rdquo;, &ldquo;is this ready to merge&rdquo;, &ldquo;PR approval checklist&rdquo;, &ldquo;merge gate check&rdquo;.
+
+<b>Procedure:</b> read ticket + diff → scope check → gate checklist → hygiene scan → test evidence → decision → follow-ups → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/16-pr-merge-review-CRISP.md</span>
+    <span><b>Alternative:</b> If the PR is already going to merge and you only want defect-level feedback, use <code>14-code-review-CRISP.md</code>.</span>
+  </div>
+
+</div>
+</body>
+</html>

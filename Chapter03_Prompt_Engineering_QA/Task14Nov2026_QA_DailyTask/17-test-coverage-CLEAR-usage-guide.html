@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Coverage — How to Use the CLEAR Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Test Coverage — CLEAR reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>17-test-coverage-CLEAR.md</strong></div>
+      <div><span>Framework</span><strong>CLEAR</strong></div>
+      <div><span>Task</span><strong>Area-by-area coverage assessment</strong></div>
+      <div><span>Guide</span><strong>17 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Reports coverage area by area, separating requirement coverage from assertion coverage, ranking uncovered areas by risk, and stating plainly what the measurement cannot tell you.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>Someone asks &ldquo;are we covered enough to release?&rdquo; and the answer must distinguish a requirement having a test from a test actually asserting the requirement.</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>You need requirement-level traceability for an audit — use <code>06-rtm-RICEPOT.md</code>. Coverage sufficiency and traceability are different questions.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>The Limits section is doing real work here: it forbids one whole-system percentage and forbids crediting a test with coverage it never asserts.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">C</span><div><b>Context</b><small>What is being run, on which build, with which evidence.</small></div></div>
+      <div class="letter"><span class="key">L</span><div><b>Limits</b><small>The fence: allowed statuses, allowed scope, what may not be invented.</small></div></div>
+      <div class="letter"><span class="key">E</span><div><b>Examples</b><small>Sample rows showing the exact status and evidence shape.</small></div></div>
+      <div class="letter"><span class="key">A</span><div><b>Action</b><small>The single deliverable you want returned.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Review</b><small>The checks the model must pass before returning the answer.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> Limits are the whole point of CLEAR — they stop the model awarding an unearned pass. Only <b>C — Context</b> changes between runs; never relax L to get a longer answer.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>Coverage needs a source of truth and an actual test list. Tool output is optional — but if it is absent, the output must say the figures are requirement-based, not line-based.</p>
+    <ul>
+      <li><b>Coverage type</b> — functional, code, API, risk-based, or mixed. This changes the method.</li>
+      <li><b>Source of truth</b> — requirements list, codebase, or endpoint list.</li>
+      <li><b>Existing tests</b> — the test list or coverage report.</li>
+      <li><b>Tool output</b> — JaCoCo, Istanbul, coverage.py, or say none supplied.</li>
+      <li><b>Known untestable areas</b> — so they are excluded openly rather than silently counted as gaps.</li>
+      <li><b>Release criticality</b> — which areas must be covered before release.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Context block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[PRODUCT / MODULE]</code></td><td>What is being measured.</td><td>VWO — Login</td></tr>
+        <tr><td><code>[FUNCTIONAL / CODE / API / RISK-BASED / MIXED]</code></td><td>The method, stated up front.</td><td>Functional (requirements-based)</td></tr>
+        <tr><td><code>[REQUIREMENTS LIST / CODEBASE / ENDPOINT LIST]</code></td><td>What coverage is measured against.</td><td>4 approved login requirements</td></tr>
+        <tr><td><code>[PASTE TEST LIST OR COVERAGE REPORT]</code></td><td>The tests that exist.</td><td>VWO-LOGIN-TC-001 to TC-012</td></tr>
+        <tr><td><code>[PASTE — e.g. JaCoCo, Istanbul, coverage.py — OR &quot;None supplied&quot;]</code></td><td>Tool output if you have it.</td><td>None supplied</td></tr>
+        <tr><td><code>[PASTE OR &quot;None&quot;]</code></td><td>Areas that cannot be covered and why.</td><td>Payment sandbox unavailable</td></tr>
+        <tr><td><code>[WHICH AREAS MUST BE COVERED]</code></td><td>The release-critical list.</td><td>Login, session timeout</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Asking for &ldquo;overall coverage&rdquo;. The template refuses a single whole-system number on purpose — coverage that varies by area must be reported by area or it is misleading.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Six sections. The two percentage columns are deliberately separate, because a test that runs without asserting is not coverage.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Coverage Scope and Method</b></td><td><span class="yes">Yes</span></td><td>Type, source of truth, limitation statement</td></tr>
+        <tr><td><b>Coverage by Area</b></td><td><span class="yes">Yes</span></td><td>Area | Items | With Tests | Req Coverage % | With Assertions | Assertion Coverage % | Notes</td></tr>
+        <tr><td><b>Risk-Ranked Uncovered Areas</b></td><td><span class="yes">Yes</span></td><td>Rank | Area | Gap | Risk | Pointer</td></tr>
+        <tr><td><b>Release-Critical Assessment</b></td><td><span class="yes">Yes</span></td><td>Which uncovered areas block release and why</td></tr>
+        <tr><td><b>Coverage Limitations</b></td><td><span class="yes">Yes</span></td><td>What this measurement cannot tell you</td></tr>
+        <tr><td><b>Summary</b></td><td><span class="yes">Yes</span></td><td>Overall figures, as ranges if heterogeneous</td></tr>
+      </tbody>
+    </table>
+    <p>Requirement coverage and assertion coverage are never merged into one number. Percentages are computed from counted rows. Suggestions are limited to a one-line pointer per gap — this is an assessment, not a test design.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — the second row is the finding that matters: validation requirements exist, but nothing asserts them.</p>
+    <table>
+      <thead><tr><th style="width:16%">Area</th><th style="width:7%">Items</th><th style="width:9%">With Tests</th><th style="width:8%">Req %</th><th style="width:11%">With Assertions</th><th style="width:10%">Assertion %</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Login</td><td>4</td><td>3</td><td>75%</td><td>1</td><td>25%</td><td>REQ-003 has no asserting test; TC-004 asserts presence only, not blocking</td></tr>
+        <tr><td>Login — validation</td><td>2</td><td>1</td><td>50%</td><td>0</td><td><span class="no">0%</span></td><td>Both validation requirements lack an assertion</td></tr>
+      </tbody>
+    </table>
+    <p><b>Risk ranking:</b> (1) Validation assertion coverage 0% — blocks the release gate. (2) REQ-003 access control unverified. <b>Limitations:</b> no coverage tool output supplied; figures are requirement-based, not line or branch coverage.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Seven checks. The separation of the two coverage columns is the whole discipline — every other check supports it.</p>
+    <ul class="check">
+      <li>Every percentage recomputed from the row counts.</li>
+      <li>Requirement coverage and assertion coverage reported as distinct columns.</li>
+      <li>No test credited for behaviour it does not assert.</li>
+      <li>Risk ranking puts release-critical gaps first.</li>
+      <li>Measurement limitations stated explicitly.</li>
+      <li>No single misleading whole-system percentage.</li>
+      <li>Suggestions limited to pointers, not full test designs.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Pick the highest coverage number and open one of those tests. If it does not assert the behaviour it is credited with, the assertion column is inflated.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>One whole-system coverage percentage is reported.</td><td>Break down by area.</td><td>&ldquo;Split into per-area rows and state the range in the summary.&rdquo;</td></tr>
+        <tr><td>Line coverage is presented as behavioural coverage.</td><td>Not interchangeable.</td><td>&ldquo;Report requirement and assertion coverage separately.&rdquo;</td></tr>
+        <tr><td>A test is credited without an assertion.</td><td>No credit without assertion.</td><td>&ldquo;Move it to the requirement column only.&rdquo;</td></tr>
+        <tr><td>A percentage looks estimated.</td><td>Computed from counts.</td><td>&ldquo;Recompute from the row counts or mark Not supplied.&rdquo;</td></tr>
+        <tr><td>Full test designs appear in the suggestion column.</td><td>Pointers only.</td><td>&ldquo;Cut each suggestion to a one-line pointer.&rdquo;</td></tr>
+        <tr><td>A release-critical gap is not ranked first.</td><td>Risk-first ranking.</td><td>&ldquo;Reorder the ranking by release impact.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>RTM</b><small>06-rtm-RICEPOT.md</small><span>When coverage must be traceable, not just measured.</span></div>
+      <div class="card"><b>Gap analysis</b><small>11-gap-analysis-RICEPOT.md</small><span>Turn uncovered areas into an owned, typed gap register.</span></div>
+      <div class="card"><b>Automation code generation</b><small>15-automation-code-generation-RICEPOT.md</small><span>Automate the highest-risk uncovered area first.</span></div>
+    </div>
+    <p>A coverage number without the method beside it is ammunition for the wrong argument. Always quote the type and the source of truth with the percentage.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/test-coverage-assessment/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: test-coverage-assessment
+description: Assess functional, code, or API coverage area by area, separating requirement coverage from assertion coverage, ranking uncovered areas by risk, and stating measurement limits. Use when judging whether testing is sufficient before release.
+---
+
+<b>Trigger phrases:</b> &ldquo;test coverage report&rdquo;, &ldquo;how much is covered&rdquo;, &ldquo;coverage gaps for this module&rdquo;, &ldquo;are we covered enough to release&rdquo;.
+
+<b>Procedure:</b> confirm coverage type → enumerate items → map tests → verify assertions → compute both percentages → risk rank gaps → release-critical callout → limitations → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/17-test-coverage-CLEAR.md</span>
+    <span><b>Alternative:</b> If the question is traceability rather than sufficiency, <code>06-rtm-RICEPOT.md</code> produces the auditable requirement-to-test-to-defect matrix instead.</span>
+  </div>
+
+</div>
+</body>
+</html>

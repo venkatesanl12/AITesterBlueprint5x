@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regression Testing — How to Use the STAR Template</title>
+<style>
+  :root {
+    --ink: #1a2238;
+    --ink-soft: #344054;
+    --muted: #667085;
+    --line: #e4e7ec;
+    --accent: #1d4ed8;
+    --accent-soft: #eff4ff;
+    --code-bg: #f4f6fa;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --ok: #067647;
+    --ok-bg: #ecfdf3;
+    --bad: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #eef1f6;
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 28px auto;
+    background: #fff;
+    padding: 46px 54px 40px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+  }
+
+  .eyebrow {
+    font-size: 8pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -.6px;
+    font-weight: 800;
+  }
+  .subtitle {
+    margin: 6px 0 22px;
+    font-size: 12pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 26px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    margin-bottom: 26px;
+  }
+  .meta div { display: flex; flex-direction: column; gap: 2px; }
+  .meta span {
+    font-size: 7.5pt;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .meta strong { font-size: 9.5pt; font-weight: 600; word-break: break-all; }
+
+  .purpose {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    margin-bottom: 26px;
+  }
+  .purpose p { margin: 0; font-size: 10.5pt; }
+  .purpose b { color: var(--accent); }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .pair .card {
+    border: 1px solid var(--line);
+    padding: 12px 15px 14px;
+    background: #fbfcfe;
+  }
+  .pair .card.go { border-top: 3px solid var(--ok); }
+  .pair .card.stop { border-top: 3px solid var(--warn); }
+  .pair .card h3 {
+    margin: 0 0 6px;
+    font-size: 8pt;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pair .card p { margin: 0; font-size: 9.5pt; }
+
+  section.block { margin-bottom: 28px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  .num {
+    flex: 0 0 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 13.5pt;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  .block p { margin: 0 0 9px; }
+  .block ul, .block ol { margin: 0 0 9px; padding-left: 22px; }
+  .block li { margin-bottom: 5px; }
+  .block li::marker { color: var(--accent); }
+
+  .letters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .letter {
+    display: flex;
+    gap: 11px;
+    border: 1px solid var(--line);
+    background: #fbfcfe;
+    padding: 9px 12px 10px;
+  }
+  .letter .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter b { display: block; font-size: 10pt; }
+  .letter small { color: var(--muted); font-size: 8.5pt; line-height: 1.45; display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 10px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 7.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--ink);
+    padding: 6px 8px;
+    background: #f9fafc;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:nth-child(even) td { background: #fcfdff; }
+  td.id { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.5pt; color: #0b3d91; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .partial { color: var(--warn); font-weight: 700; }
+  .no { color: var(--bad); font-weight: 700; }
+
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 8.8pt;
+    color: #0b3d91;
+    word-break: break-word;
+  }
+  pre {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    padding: 12px 15px;
+    margin: 0 0 12px;
+    font-size: 8.6pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+  pre b { color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    margin: 12px 0 0;
+    font-size: 9.5pt;
+  }
+  .callout b { color: var(--accent); }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .callout.warn b { color: var(--warn); }
+
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 9.7pt;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .chain .card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 10px 12px;
+    background: #fbfcfe;
+  }
+  .chain .card b { display: block; font-size: 9.5pt; margin-bottom: 3px; }
+  .chain .card small {
+    display: block;
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 7.6pt;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .chain .card span { font-size: 8.5pt; color: var(--muted); }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  @page { size: A4; }
+  @media print {
+    body { background: #fff; font-size: 9.2pt; line-height: 1.5; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; padding: 0; }
+    h1 { font-size: 23pt; }
+    .subtitle { font-size: 11pt; margin-bottom: 14px; }
+    .meta { padding: 10px 0; margin-bottom: 18px; gap: 8px 24px; }
+    section.block { margin-bottom: 16px; }
+    .letter, .pair .card, .chain .card, tr { break-inside: avoid; }
+    .purpose { margin-bottom: 16px; }
+    .pair { margin-bottom: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">Chapter 03 · Daily QA Prompt Templates</div>
+    <h1>How to Use This Template</h1>
+    <p class="subtitle">Regression Testing — STAR reference guide</p>
+    <div class="meta">
+      <div><span>Template file</span><strong>09-regression-testing-STAR.md</strong></div>
+      <div><span>Framework</span><strong>STAR</strong></div>
+      <div><span>Task</span><strong>Risk-based regression scope and suite</strong></div>
+      <div><span>Guide</span><strong>09 of 17</strong></div>
+    </div>
+  </header>
+
+  <div class="purpose">
+    <p><b>What it does.</b> Builds a tiered regression suite that fits the time you actually have: everything the change touched, every business-critical path, and the historical defect hotspots — with named exclusions, residual risk, entry/exit criteria, and a risk-first execution order.</p>
+  </div>
+
+  <div class="pair">
+    <div class="card go">
+      <h3>Use when</h3>
+      <p>A release, sprint, or sizeable change needs a defensible answer to &ldquo;what do we re-test, and what are we accepting by not re-testing?&rdquo;</p>
+    </div>
+    <div class="card stop">
+      <h3>Skip when</h3>
+      <p>You only need a fast readiness verdict — use <code>07-smoke-sanity-testing-CLEAR.md</code>. Regression is the expensive assurance step, not the gate.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="section-head"><span class="num">1</span><h2>Read the framework before you paste anything</h2></div>
+    <p>STAR suits planning: Situation carries the constraints, Task states the outcome, Action is the tiering procedure, Result is the deliverable set.</p>
+    <div class="letters">
+      <div class="letter"><span class="key">S</span><div><b>Situation</b><small>The release, change, budget and constraints you supply.</small></div></div>
+      <div class="letter"><span class="key">T</span><div><b>Task</b><small>The one outcome required, stated in a sentence.</small></div></div>
+      <div class="letter"><span class="key">A</span><div><b>Action</b><small>The ordered analysis steps the model must perform.</small></div></div>
+      <div class="letter"><span class="key">R</span><div><b>Result</b><small>The numbered deliverable sections and their shape.</small></div></div>
+    </div>
+    <div class="callout">
+      <b>Rule of thumb.</b> STAR is a planning and reporting frame, so the numbers live in S and the contract lives in R. Only <b>S — Situation</b> changes between runs.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">2</span><h2>Prepare the inputs first</h2></div>
+    <p>Regression scope is decided by three inputs: what changed, what is critical, and how much time you have. Any one missing and the plan is guesswork.</p>
+    <ul>
+      <li><b>Change summary</b> — changelog, fixed defects, new features since the last release.</li>
+      <li><b>Affected modules</b> — what the change touched, including indirect dependents.</li>
+      <li><b>Business-critical modules</b> — critical, even if unchanged. These never fall out of scope by default.</li>
+      <li><b>Time budget</b> — days or tester-hours. The suite must fit it or say why it does not.</li>
+      <li><b>Historical hotspots</b> — where defects clustered before. If unknown, say not supplied rather than inventing.</li>
+      <li><b>Environment</b> — URLs, browser/OS matrix, builds.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">3</span><h2>Fill only the Situation block</h2></div>
+    <table>
+      <thead><tr><th style="width:30%">Placeholder</th><th style="width:38%">What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>[PRODUCT] release [VERSION]</code></td><td>What the regression is for.</td><td>VWO 2026.11</td></tr>
+        <tr><td><code>[PASTE CHANGELOG / FIXED DEFECTS / FEATURES]</code></td><td>The actual change set, not a summary sentence.</td><td>Login validation fix (DEF-101), dashboard filter change</td></tr>
+        <tr><td><code>[MODULES]</code> / <code>[MODULES NOT CHANGED BUT CRITICAL]</code></td><td>Two separate lists — the second is what usually gets forgotten.</td><td>Login, Dashboard / Payments, Reports</td></tr>
+        <tr><td><code>[N CASES]</code></td><td>Existing suite size, so selection is a real trade-off.</td><td>86 cases</td></tr>
+        <tr><td><code>[N DAYS / N TESTER-HOURS]</code></td><td>The budget.</td><td>2 tester-days</td></tr>
+        <tr><td><code>[AREAS WITH PAST DEFECTS]</code></td><td>Hotspots, or &ldquo;not supplied&rdquo;.</td><td>Login (3 defects last cycle)</td></tr>
+        <tr><td><code>[URL, BROWSER/OS MATRIX, BUILDS]</code></td><td>Where it runs.</td><td>Chrome + Firefox / Windows 11, build rc1</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>Most common mistake.</b> Supplying only the changelog. The <i>unchanged but critical</i> list is what stops a regression plan from quietly dropping the revenue path.</div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">4</span><h2>Audit the output against the contract</h2></div>
+    <p>Seven sections. The suite and the exclusion list carry equal weight — a regression plan that does not say what it excludes is not a scope, it is a wish.</p>
+    <table>
+      <thead><tr><th style="width:26%">Section</th><th style="width:14%">Required</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><b>Scope and Coverage Rationale</b></td><td><span class="yes">Yes</span></td><td>Bullets tied to change, criticality, history</td></tr>
+        <tr><td><b>Regression Suite</b></td><td><span class="yes">Yes</span></td><td>Tier | Area | Case IDs | Purpose | Time | Data Setup | Priority</td></tr>
+        <tr><td><b>Excluded Areas and Residual Risk</b></td><td><span class="yes">Yes</span></td><td>Area | Reason | Risk If It Breaks | Accepting Owner; may say &ldquo;None&rdquo;</td></tr>
+        <tr><td><b>Entry Criteria</b></td><td><span class="yes">Yes</span></td><td>Checklist</td></tr>
+        <tr><td><b>Exit Criteria</b></td><td><span class="yes">Yes</span></td><td>Checklist, objectively checkable</td></tr>
+        <tr><td><b>Execution Order</b></td><td><span class="yes">Yes</span></td><td>Numbered, risk-first</td></tr>
+        <tr><td><b>Time Budget vs Estimate</b></td><td><span class="yes">Yes</span></td><td>Per tier + total</td></tr>
+      </tbody>
+    </table>
+    <p>Tiers mean: Tier 1 must run, Tier 2 should run, Tier 3 optional. Every Tier 1 row must name its justification, and every exclusion must name an owner who accepts the risk.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">5</span><h2>What a good run looks like</h2></div>
+    <p>Filled excerpt from the template — the tiering is time-bounded, and the exclusion names who accepts the residual risk.</p>
+    <table>
+      <thead><tr><th style="width:8%">Tier</th><th style="width:13%">Area</th><th style="width:17%">Case IDs</th><th style="width:34%">Purpose</th><th style="width:8%">Time</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td><b>Tier 1</b></td><td>Login</td><td>TC-001–TC-012</td><td>Changed area + top defect hotspot</td><td>3.5h</td><td>P1</td></tr>
+        <tr><td><b>Tier 1</b></td><td>Dashboard</td><td>TC-030–TC-038</td><td>Changed filter logic</td><td>2.5h</td><td>P1</td></tr>
+        <tr><td><b>Tier 2</b></td><td>Reports</td><td>TC-060–TC-065</td><td>Consumes dashboard filters</td><td>2.0h</td><td>P2</td></tr>
+        <tr><td><b>Tier 3</b></td><td>Settings</td><td>TC-090–TC-092</td><td>Unchanged, low traffic</td><td>1.0h</td><td>P3</td></tr>
+      </tbody>
+    </table>
+    <p><b>Excluded:</b> Billing — no change, previous cycle fully green — risk: revenue loss if broken — accepted by QA Lead. <b>Exit criteria:</b> all Tier 1 passed; no open Critical; at most 2 open High with accepted workarounds.</p>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">6</span><h2>Run the self-check before you trust the output</h2></div>
+    <p>Six checks. The first three decide whether the scope is honest; the budget check decides whether it is achievable.</p>
+    <ul class="check">
+      <li>Every changed area appears in Tier 1.</li>
+      <li>All business-critical paths are represented regardless of change status.</li>
+      <li>Hotspot areas are included, or their exclusion is justified and risk-accepted.</li>
+      <li>Time estimate totals against the budget, with overrun flagged.</li>
+      <li>Exit criteria are objectively checkable.</li>
+      <li>No invented historical defect data.</li>
+    </ul>
+    <div class="callout">
+      <b>Fastest sanity check.</b> Add up the Time column and compare it to the budget yourself. If the numbers were never added, the plan is a list of intentions.
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">7</span><h2>Fix the failure, not the whole prompt</h2></div>
+    <table>
+      <thead><tr><th style="width:34%">Symptom</th><th style="width:24%">Rule breached</th><th>Correction to send</th></tr></thead>
+      <tbody>
+        <tr><td>An unchanged area is assumed safe.</td><td>No safety by omission.</td><td>&ldquo;Either bring it into Tier 1/2 or record it as an accepted residual risk.&rdquo;</td></tr>
+        <tr><td>The suite exceeds the budget with no comment.</td><td>Flag the overrun.</td><td>&ldquo;State the overrun and propose what to cut or what extra time is needed.&rdquo;</td></tr>
+        <tr><td>A Tier 1 row has no justification.</td><td>Every Tier 1 inclusion justified.</td><td>&ldquo;Cite change impact, criticality, or defect history.&rdquo;</td></tr>
+        <tr><td>An exclusion has no accepting owner.</td><td>Named risk acceptor.</td><td>&ldquo;Add the accepting owner or move the area into scope.&rdquo;</td></tr>
+        <tr><td>Hotspot data looks invented.</td><td>No invented history.</td><td>&ldquo;Replace with Not supplied. and adjust the rationale.&rdquo;</td></tr>
+        <tr><td>Exit criteria are missing or vague.</td><td>Objectively checkable.</td><td>&ldquo;Add exit criteria a reviewer could verify without asking you.&rdquo;</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">8</span><h2>Where the output goes next</h2></div>
+    <div class="chain">
+      <div class="card"><b>Smoke and sanity</b><small>07-smoke-sanity-testing-CLEAR.md</small><span>Gate the build before spending regression time.</span></div>
+      <div class="card"><b>Test case execution</b><small>04-test-case-execution-CLEAR.md</small><span>Record evidence for the selected regression cases.</span></div>
+      <div class="card"><b>Status report</b><small>13-status-report-STAR.md</small><span>Report regression progress against the plan.</span></div>
+    </div>
+    <p>The excluded-areas table is the artefact you will be asked about if something breaks. Keep it, and keep the name of whoever accepted each risk.</p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><span class="num">9</span><h2>Turn it into a skill</h2></div>
+    <p>Create <code>skills/regression-testing/SKILL.md</code>, paste the frontmatter below, use the template's prompt block as the body, then add the output contract and self-check verbatim.</p>
+    <pre>---
+name: regression-testing
+description: Build a risk-based, time-budgeted regression suite with tiers, inclusion justification, excluded-area residual risk, entry and exit criteria, and a risk-first execution order. Use when planning regression for a release or sprint.
+---
+
+<b>Trigger phrases:</b> &ldquo;plan regression testing&rdquo;, &ldquo;regression suite for this release&rdquo;, &ldquo;what should we re-test&rdquo;, &ldquo;regression scope&rdquo;.
+
+<b>Procedure:</b> gather change + criticality + history → tier candidates → select within budget → justify → exclusions with risk → entry/exit → order → budget check → self-check.</pre>
+    <div class="callout warn">
+      <b>One framework per file.</b> Do not merge this with another framework's skeleton. Blended sections make the contract ambiguous and break the SKILL.md conversion.
+    </div>
+  </section>
+
+  <div class="footer">
+    <span><b>Source:</b> Chapter_03_Prompt_Engineering_QA/Task14Nov2026_QA_DailyTask/09-regression-testing-STAR.md</span>
+    <span><b>Alternative:</b> If the change is tiny and contained, <code>07-smoke-sanity-testing-CLEAR.md</code> may give you the same confidence far cheaper.</span>
+  </div>
+
+</div>
+</body>
+</html>

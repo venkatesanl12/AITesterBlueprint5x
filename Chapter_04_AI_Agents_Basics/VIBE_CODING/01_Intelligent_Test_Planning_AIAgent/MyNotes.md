@@ -1,0 +1,2 @@
+Prompt:
+@Chapter_04_AI_Agents_Basics/VIBE_CODING/01_Intelligent_Test_Planning_AIAgent/02_Implementation/prompt_TP_Creator.md .env file is present in Chapter_04_AI_Agents_Basics\VIBE_CODING\.env open the localhost when you are done, keep it very simple and short, all code must be in Chapter_04_AI_Agents_Basics\VIBE_CODING\01_Intelligent_Test_Planning_AIAgent\02_Implementation\src folder

@@ -5,13 +5,13 @@ Act as a senior full-stack engineer and QA automation architect experienced in R
 Build a lightweight React-based application that accepts a Jira issue ID, retrieves its requirements from Jira, and generates a test plan using the template provided during the planning phase.
 
 1. **Review the existing project inputs.**
-   - Read `config.md` for the configured Jira email ID, API token, and base URL.
+   - Read `.env` for the configured Jira email ID, API token, and base URL.
    - Locate and review the supplied UI designs, planning documents, and test plan template.
    - Identify any existing technology choices and implementation conventions.
    - Check whether AI provider configuration already exists. Do not assume a provider or model.
 
 2. **Create the project structure.**
-   - Place the application inside an `implementation` folder.
+   - Place the application inside an `02_implementation/src` folder.
    - Create a `src` folder containing separate `frontend` and `backend` folders.
    - Use React for the frontend and a minimal backend compatible with the existing project. If no backend technology is specified, use Node.js with Express.
    - Keep dependencies and architecture lightweight.
@@ -59,10 +59,10 @@ Do NOT:
 ### C — Context
 - **Project:** AI-powered Jira Test Plan Generator.
 - **Primary user:** A QA engineer who provides a Jira issue ID and needs a structured test plan.
-- **Configuration source:** `config.md`, containing the Jira email ID, API token, and base URL.
+- **Configuration source:** `.env`, containing the Jira email ID, API token, and base URL.
 - **Design source:** UI designs already supplied in the project, including a settings page.
 - **Test plan source:** The template supplied during the planning phase.
-- **Implementation destination:** `implementation/src/`.
+- **Implementation destination:** `02_implementation/src/`.
 - **Expected workflow:** Enter Jira ID → retrieve Jira requirements → generate the test plan → display the result.
 - The contents of the existing files are authoritative. Inspect them before implementing dependent functionality.
 - If a required design, template, credential, or AI configuration is missing, identify the exact missing input. Continue with independent work and report what remains blocked.
@@ -113,7 +113,7 @@ Deliver working source code, configuration examples without secrets, and setup d
 
 **Required structure:**
 ```text
-implementation/
+02_implementation/
 ├── src/
 │   ├── frontend/
 │   │   └── React application and supporting files
@@ -135,7 +135,7 @@ The application must include:
 
 The `README.md` must explain:
 - Prerequisites and installation.
-- How the backend reads `config.md`.
+- How the backend reads `.env`.
 - Any additional required AI configuration.
 - Commands to run the frontend and backend.
 - How to use the application.

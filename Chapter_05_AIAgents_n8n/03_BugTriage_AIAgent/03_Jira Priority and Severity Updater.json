@@ -1,0 +1,470 @@
+{
+  "name": "03_Jira Priority and Severity Updater",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi! Send me a Jira issue key from project AIBluePrint5x (for example KAN-3). I will show its details, propose Priority and Severity, and update Jira after you approve.",
+        "options": {
+          "responseMode": "responseNodes"
+        }
+      },
+      "id": "e90e1008-a714-4225-a6a6-2c638765322e",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        256
+      ],
+      "webhookId": "20f56e4c-de5e-4cd5-a248-526b17545f3c"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "s1",
+              "name": "severity_field_id",
+              "type": "string",
+              "value": "customfield_10045"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "e2fa8d84-78bd-42f7-812b-bd2eac575908",
+      "name": "Jira Settings",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        272,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "={{ ($json.chatInput.match(/[A-Za-z][A-Za-z0-9]+-\\d+/) || [\"\"])[0].toUpperCase() }}",
+        "additionalFields": {}
+      },
+      "id": "985319cc-689f-4ae4-8592-f1731e2d11ee",
+      "name": "Get Jira Issue",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        496,
+        384
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "uMJMkWjr590A1BSO",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.fields.project.key }}",
+              "rightValue": "KAN",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "9507ae6c-60b7-45a8-853a-c5b99ae31d3e"
+            },
+            {
+              "leftValue": "={{ $json.fields.project.name }}",
+              "rightValue": "AIBluePrint5x",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "651fe05b-547a-446f-986c-0970835af9aa"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9e70e8b2-29d9-43b9-a2c6-8cc816746904",
+      "name": "Is KAN issue in AIBluePrint5x",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        720,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Issue: {{ $json.key }}\nSummary: {{ $json.fields.summary }}\nDescription: {{ $json.fields.description }}\nCurrent priority: {{ $json.fields.priority?.name }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a senior QA triage expert. From the Jira defect, decide Priority (exactly one of: Highest, High, Medium, Low, Lowest) and Severity (exactly one of: High, Medium, Low). Severity is impact; Priority is fix urgency. Use only what the summary and description say. Do not invent impact, users or environments. If the information is thin, say so in the reasoning and mark the choice as low confidence. Return only the JSON."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "e2ef52f7-9072-455e-986b-30a2bc68794e",
+      "name": "Assess Priority and Severity",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        752,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "id": "4671b73b-8251-4788-a570-e3d7312600c8",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        768,
+        224
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "rdKRy5ykmJcU6GlG",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{ \"priority\": \"High\", \"severity\": \"Medium\", \"reasoning\": \"short reason quoting the ticket\" }"
+      },
+      "id": "061657da-276f-4cc3-89b2-5d38b6c25ac6",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "message": "=**{{ $('Get Jira Issue').item.json.key }}: {{ $('Get Jira Issue').item.json.fields.summary }}**\n\nStatus: {{ $('Get Jira Issue').item.json.fields.status?.name }}\nCurrent Priority: {{ $('Get Jira Issue').item.json.fields.priority?.name }}\nCurrent Severity: {{ $('Get Jira Issue').item.json.fields[$('Jira Settings').item.json.severity_field_id] || 'not set' }}\n\nDescription: {{ $('Get Jira Issue').item.json.fields.description || 'none' }}\n\nProposed Priority: **{{ $json.output.priority }}**\nProposed Severity: **{{ $json.output.severity }}**\nReasoning: {{ $json.output.reasoning }}\n\nApprove to update Jira.",
+        "responseType": "approval",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "buttonDisapprovalStyle": "primary"
+          }
+        },
+        "options": {}
+      },
+      "id": "f936a10d-25ab-417d-995c-6226a0501bfb",
+      "name": "Ask for Approval",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        112
+      ],
+      "webhookId": "27d80071-f1fc-4243-8d82-84144f508cf5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.approved ?? $json.data?.approved ?? false }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "169335c3-a237-4f6b-a023-c86498b3cb48"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1997a668-202c-42be-8a34-d40913aa33c5",
+      "name": "Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1376,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "issueKey": "={{ $('Get Jira Issue').item.json.key }}",
+        "updateFields": {
+          "customFieldsUi": {
+            "customFieldsValues": [
+              {
+                "fieldId": {
+                  "__rl": true,
+                  "value": "customfield_10045",
+                  "mode": "id"
+                },
+                "fieldValue": "={{ ({ value: $('Assess Priority and Severity').item.json.output.severity }) }}"
+              }
+            ]
+          },
+          "priority": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ ({Highest:'1',High:'2',Medium:'3',Low:'4',Lowest:'5'})[$('Assess Priority and Severity').item.json.output.priority] }}"
+          }
+        }
+      },
+      "id": "e6726632-2e3d-4993-9ca9-424ef6fb76e8",
+      "name": "Update Priority and Severity",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        224
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "uMJMkWjr590A1BSO",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "message": "=Updated {{ $('Get Jira Issue').item.json.key }}: Priority = {{ $('Assess Priority and Severity').item.json.output.priority }}, Severity = {{ $('Assess Priority and Severity').item.json.output.severity }}.",
+        "options": {}
+      },
+      "id": "3c586460-abd0-43cc-894c-ad60683698db",
+      "name": "Confirm Update",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1.3,
+      "position": [
+        1824,
+        224
+      ],
+      "webhookId": "79cab737-2ae7-4346-8a9e-e879f0099381"
+    },
+    {
+      "parameters": {
+        "message": "=Cancelled. {{ $('Get Jira Issue').item.json.key }} was not changed.",
+        "options": {}
+      },
+      "id": "5963b014-fed7-4736-9324-ba04c9c2e260",
+      "name": "Confirm Cancelled",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1.3,
+      "position": [
+        1600,
+        416
+      ],
+      "webhookId": "1770740e-75f9-4cd5-a31c-6405ac638fcd"
+    },
+    {
+      "parameters": {
+        "message": "={{ $json.key }} is not a KAN issue in project AIBluePrint5x, so I did not change it.",
+        "options": {}
+      },
+      "id": "3a78e3fc-4cbf-4f0f-af56-2f233e80aa16",
+      "name": "Reject Other Project",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        400
+      ],
+      "webhookId": "3dee91be-cbf6-4dfa-8ba9-18d8eb9e063c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Jira Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira Settings": {
+      "main": [
+        [
+          {
+            "node": "Get Jira Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Jira Issue": {
+      "main": [
+        [
+          {
+            "node": "Is KAN issue in AIBluePrint5x",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is KAN issue in AIBluePrint5x": {
+      "main": [
+        [
+          {
+            "node": "Assess Priority and Severity",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Other Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assess Priority and Severity": {
+      "main": [
+        [
+          {
+            "node": "Ask for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Assess Priority and Severity",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Assess Priority and Severity",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for Approval": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved": {
+      "main": [
+        [
+          {
+            "node": "Update Priority and Severity",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirm Cancelled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Priority and Severity": {
+      "main": [
+        [
+          {
+            "node": "Confirm Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fa2638dd-5e13-4f3e-9cbf-987c51044b02",
+  "meta": {
+    "instanceId": "48a308040d42de1cde6a791ff375df12e35a217e6483b8c94ffc96ca92ed9e37"
+  },
+  "nodeGroups": [
+    {
+      "id": "73c785f8-7800-4241-9717-8dfd8e8cb507",
+      "name": "Fetch and validate issue",
+      "nodeIds": [
+        "e2fa8d84-78bd-42f7-812b-bd2eac575908",
+        "985319cc-689f-4ae4-8592-f1731e2d11ee",
+        "9e70e8b2-29d9-43b9-a2c6-8cc816746904"
+      ],
+      "description": "Takes the key typed in chat, loads it from Jira and checks it belongs to KAN in AIBluePrint5x"
+    },
+    {
+      "id": "aa56ccfa-2295-468b-9cda-f8255e8b0713",
+      "name": "Apply approved update",
+      "nodeIds": [
+        "1997a668-202c-42be-8a34-d40913aa33c5",
+        "e6726632-2e3d-4993-9ca9-424ef6fb76e8",
+        "3c586460-abd0-43cc-894c-ad60683698db",
+        "5963b014-fed7-4736-9324-ba04c9c2e260"
+      ],
+      "description": "Writes Priority and Severity to Jira only after approval, then confirms in chat"
+    }
+  ],
+  "id": "hm1i29SnDmd516iN",
+  "tags": []
+}

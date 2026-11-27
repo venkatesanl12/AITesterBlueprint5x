@@ -1,0 +1,107 @@
+{
+  "name": "00_HelloWorldTest_AIAgent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Hello World"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "bc26a487-e221-4205-a3b5-752ae831de1e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a281d479-0d85-4619-ba5a-17012c7c5de0",
+      "name": "When chat message received",
+      "webhookId": "6c1fe9e7-6c9b-419e-990b-bf85fdabb9b5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a Quality Engineering (QE) expert with 15 years of experience. Answer questions related to Quality Engineering, including testing strategy, test automation, quality processes, and tools.\nIf a question is unrelated to QE, politely say that you can help only with QE-related topics."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "2e4b7031-b6a2-4143-85ef-7f0afe6a2044",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        96,
+        208
+      ],
+      "id": "202ba961-462a-4215-b468-6988aa1345b6",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "rdKRy5ykmJcU6GlG",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "177060b5-846c-4f2c-beed-d3ad46c2478f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "48a308040d42de1cde6a791ff375df12e35a217e6483b8c94ffc96ca92ed9e37"
+  },
+  "nodeGroups": [],
+  "id": "WdyCezxE0cVrErFF",
+  "tags": []
+}
